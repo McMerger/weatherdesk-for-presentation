@@ -4,8 +4,6 @@ import type { WeatherData, WeatherState } from "@/lib/types";
 import { z } from "zod";
 import { searchCity, WEATHER_CODES, type MockWeatherData } from "@/lib/mock-weather-service";
 
-// Backend API configuration - points to our local Next.js API route
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:9002";
 
 /**
  * Transform backend weather data to frontend format
@@ -74,7 +72,7 @@ export async function getWeather(
 
     // Call our local mock backend API
     const response = await fetch(
-      `${BACKEND_URL}/api/weather?latitude=${cityData.latitude}&longitude=${cityData.longitude}`,
+          `/api/weather?latitude=${cityData.latitude}&longitude=${cityData.longitude}`,
       {
         method: "GET",
         cache: "no-store", // Ensure fresh data for demo purposes
