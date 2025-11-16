@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /b:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm install)",
+      "Bash(if exist .next rmdir /s /q .next)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill /F /PID 13224)",
+      "Bash(taskkill //F //PID 13224)",
+      "Bash(taskkill //F //PID 11104)",
+      "Bash(taskkill //F //PID 35032)",
+      "Bash(taskkill //F //PID 33496)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
