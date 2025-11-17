@@ -66,4 +66,4 @@ config.properties
 
 # Logs
 logs/
-*.log
+*.log.env.local

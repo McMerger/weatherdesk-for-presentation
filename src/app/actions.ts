@@ -3,6 +3,7 @@
 import type { WeatherData, WeatherState } from "@/lib/types";
 import { z } from "zod";
 import { searchCity, WEATHER_CODES, type MockWeatherData, generateMockWeatherData } from "@/lib/mock-weather-service";
+import { fetchOpenMeteoWeather, geocodeCity, fetchOpenWeatherData } from "@/lib/real-weather-service";
 
 
 /**
@@ -61,28 +62,79 @@ export async function getWeather(
   const { city } = validatedFields.data;
 
   try {
-    // Search for the city in our comprehensive database
-    const cityData = searchCity(city);
+    // Check if we should use real weather API or mock data
+    const useRealWeather = process.env.USE_REAL_WEATHER === "true";
+    const openWeatherKey = process.env.OPENWEATHER_API_KEY;
 
-    if (!cityData) {
-      return {
-        error: `City "${city}" not found. Try cities like London, New York, Tokyo, Paris, Sydney, Toronto, Berlin, Dubai, Singapore, etc.`,
-      };
+    let backendData: MockWeatherData;
+    let cityName: string;
+    let countryName: string;
+
+    if (useRealWeather) {
+      // Try OpenMeteo geocoding first (free, no API key)
+      console.log(`[REAL API] Fetching weather for "${city}" using OpenMeteo...`);
+      const geoData = await geocodeCity(city);
+
+      if (!geoData) {
+        return {
+          error: `City "${city}" not found. Please check the spelling and try again.`,
+        };
+      }
+
+      cityName = geoData.name;
+      countryName = geoData.country;
+
+      // Fetch weather from OpenMeteo (free) or OpenWeather (requires key)
+      if (openWeatherKey) {
+        console.log("[REAL API] Using OpenWeather API (with key)");
+        backendData = await fetchOpenWeatherData(
+          geoData.latitude,
+          geoData.longitude,
+          openWeatherKey
+        );
+      } else {
+        console.log("[REAL API] Using OpenMeteo API (free, no key required)");
+        backendData = await fetchOpenMeteoWeather(
+          geoData.latitude,
+          geoData.longitude,
+          geoData.timezone
+        );
+      }
+
+      console.log(`[REAL API] Successfully fetched weather for ${cityName}, ${countryName}`);
+    } else {
+      // Use mock data (default for demo/development)
+      console.log(`[MOCK API] Fetching weather for "${city}" using mock service...`);
+      const cityData = searchCity(city);
+
+      if (!cityData) {
+        return {
+          error: `City "${city}" not found. Try cities like London, New York, Tokyo, Paris, Sydney, Toronto, Berlin, Dubai, Singapore, etc.`,
+        };
+      }
+
+      cityName = cityData.name;
+      countryName = cityData.country;
+      backendData = generateMockWeatherData(
+        cityData.latitude,
+        cityData.longitude,
+        cityData.timezone || "UTC"
+      );
+
+      console.log(`[MOCK API] Successfully generated mock weather for ${cityName}, ${countryName}`);
     }
 
-    // Call our local mock backend API
-const backendData: MockWeatherData = generateMockWeatherData(cityData.latitude, cityData.longitude, cityData.timezone || "UTC");
     // Transform backend data to match frontend format
-    const weatherData = transformBackendData(backendData, cityData.name);
+    const weatherData = transformBackendData(backendData, cityName);
 
     return {
       weatherData: weatherData,
-      message: `Successfully fetched weather for ${weatherData.current.city}, ${cityData.country}.`,
+      message: `Successfully fetched weather for ${weatherData.current.city}, ${countryName}. ${useRealWeather ? "(Real data)" : "(Demo data)"}`,
     };
   } catch (error) {
     console.error("Error fetching weather:", error);
     return {
-      error: "Failed to fetch weather data. Please ensure the development server is running.",
+      error: "Failed to fetch weather data. Please try again or check your internet connection.",
     };
   }
 }
