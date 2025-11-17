@@ -6,28 +6,38 @@ type WeatherIconProps = {
 } & ComponentProps<typeof Sun>;
 
 export function WeatherIcon({ condition, ...props }: WeatherIconProps) {
-  switch (condition.toLowerCase()) {
-    case 'clear':
-      return <Sun {...props} className="text-yellow-400" />;
-    case 'clouds':
-      return <Cloudy {...props} />;
-    case 'few clouds':
-      return <CloudSun {...props} />;
-    case 'scattered clouds':
-      return <Cloud {...props} />;
-    case 'broken clouds':
-      return <Cloudy {...props} />;
-    case 'shower rain':
-      return <CloudRain {...props} />;
-    case 'rain':
-      return <CloudDrizzle {...props} />;
-    case 'thunderstorm':
-      return <CloudLightning {...props} />;
-    case 'snow':
-      return <Snowflake {...props} />;
-    case 'mist':
-      return <CloudFog {...props} />;
-    default:
-      return <CloudSun {...props} />;
+  const lowerCondition = condition.toLowerCase();
+
+  // Check for specific weather conditions using substring matching
+  // Order matters: check most specific conditions first
+  if (lowerCondition.includes('thunderstorm') || lowerCondition.includes('lightning')) {
+    return <CloudLightning {...props} />;
   }
+  if (lowerCondition.includes('snow')) {
+    return <Snowflake {...props} />;
+  }
+  if (lowerCondition.includes('drizzle')) {
+    return <CloudDrizzle {...props} />;
+  }
+  if (lowerCondition.includes('rain') || lowerCondition.includes('shower')) {
+    return <CloudRain {...props} />;
+  }
+  if (lowerCondition.includes('fog') || lowerCondition.includes('mist')) {
+    return <CloudFog {...props} />;
+  }
+  if (lowerCondition.includes('overcast') || lowerCondition.includes('broken')) {
+    return <Cloudy {...props} />;
+  }
+  if (lowerCondition.includes('partly') || lowerCondition.includes('scattered') || lowerCondition.includes('few')) {
+    return <CloudSun {...props} />;
+  }
+  if (lowerCondition.includes('cloud')) {
+    return <Cloud {...props} />;
+  }
+  if (lowerCondition.includes('clear') || lowerCondition.includes('sun') || lowerCondition.includes('mainly clear')) {
+    return <Sun {...props} className="text-yellow-400" />;
+  }
+
+  // Default fallback
+  return <CloudSun {...props} />;
 }
