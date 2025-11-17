@@ -8,10 +8,10 @@
  */
 export interface CurrentWeather {
   city: string;
-  temperature: number; // in Fahrenheit
+  temperature: number; // in Celsius
   condition: string; // e.g., "Clear", "Cloudy", "Rain"
   humidity: number; // 0-100 percentage
-  windSpeed: number; // in mph
+  windSpeed: number; // in km/h
   date: string; // formatted date string
 }
 
@@ -20,8 +20,8 @@ export interface CurrentWeather {
  */
 export interface ForecastDay {
   day: string; // day name, e.g., "Monday"
-  high: number; // high temperature in Fahrenheit
-  low: number; // low temperature in Fahrenheit
+  high: number; // high temperature in Celsius
+  low: number; // low temperature in Celsius
   condition: string; // weather condition
 }
 
