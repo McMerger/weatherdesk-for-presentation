@@ -17,22 +17,22 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
   const { condition, temperature, humidity, windSpeed } = weather;
   const recommendations: Recommendation[] = [];
 
-  // Temperature-based recommendations
-  if (temperature > 80) {
+  // Temperature-based recommendations (using Celsius)
+  if (temperature > 27) {
     recommendations.push({
       icon: <Sun className="w-5 h-5" />,
       title: "Stay Cool",
       description: "It's hot outside! Stay hydrated, wear light clothing, and seek shade during peak hours.",
       color: "text-orange-500",
     });
-  } else if (temperature < 40) {
+  } else if (temperature < 4) {
     recommendations.push({
       icon: <Snowflake className="w-5 h-5" />,
       title: "Bundle Up",
       description: "It's cold! Dress in layers, wear a warm coat, and don't forget gloves and a hat.",
       color: "text-blue-400",
     });
-  } else if (temperature >= 60 && temperature <= 75) {
+  } else if (temperature >= 16 && temperature <= 24) {
     recommendations.push({
       icon: <Sun className="w-5 h-5" />,
       title: "Perfect Weather",
