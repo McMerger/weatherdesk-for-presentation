@@ -127,6 +127,13 @@ export async function getWeather(
     // Transform backend data to match frontend format
     const weatherData = transformBackendData(backendData, cityName);
 
+    // DEBUG: Log the weather data being returned
+    console.log("🌡️  SERVER: Generated weather for", cityName);
+    console.log("   Temperature:", weatherData.current.temperature, "°C");
+    console.log("   Condition:", weatherData.current.condition);
+    console.log("   Humidity:", weatherData.current.humidity, "%");
+    console.log("   Wind Speed:", weatherData.current.windSpeed, "km/h");
+
     return {
       weatherData: weatherData,
       message: `Successfully fetched weather for ${weatherData.current.city}, ${countryName}. ${useRealWeather ? "(Real data)" : "(Demo data)"}`,

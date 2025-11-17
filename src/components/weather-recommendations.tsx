@@ -24,8 +24,20 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
   const recommendations: Recommendation[] = [];
   const conditionLower = condition.toLowerCase();
 
+  // DEBUG LOGGING
+  console.log("\n" + "=".repeat(60));
+  console.log("🔍 GET WEATHER RECOMMENDATIONS CALLED");
+  console.log("=".repeat(60));
+  console.log("Input Weather Data:");
+  console.log("  City:", weather.city);
+  console.log("  Temperature:", temperature, "°C");
+  console.log("  Condition:", condition);
+  console.log("  Humidity:", humidity, "%");
+  console.log("  Wind Speed:", windSpeed, "km/h");
+
   // Create a deterministic seed from weather data for consistent but varied recommendations
   const seed = Math.floor(temperature * 100 + humidity + windSpeed);
+  console.log("  Seed for variation:", seed);
 
   // PRIORITY 1: SAFETY-CRITICAL CONDITIONS (always show first)
   if (conditionLower.includes("thunderstorm") || conditionLower.includes("thunder")) {
@@ -427,11 +439,29 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
   }
 
   // Return top 3 highest priority recommendations
-  return recommendations.slice(0, 3);
+  const finalRecommendations = recommendations.slice(0, 3);
+
+  console.log("Generated Recommendations:");
+  finalRecommendations.forEach((rec, i) => {
+    console.log(`  ${i + 1}. [${rec.color}] ${rec.title}`);
+  });
+  console.log("=".repeat(60) + "\n");
+
+  return finalRecommendations;
 }
 
 export function WeatherRecommendations({ weather }: WeatherRecommendationsProps) {
   const recommendations = getWeatherRecommendations(weather);
+
+  // DEBUG: Log what weather data we're receiving
+  console.log("🔍 WEATHER DATA RECEIVED:", {
+    city: weather.city,
+    temperature: weather.temperature,
+    condition: weather.condition,
+    humidity: weather.humidity,
+    windSpeed: weather.windSpeed
+  });
+  console.log("📋 RECOMMENDATIONS GENERATED:", recommendations.map(r => r.title));
 
   return (
     <Card className="w-full shadow-lg border-primary/20">
