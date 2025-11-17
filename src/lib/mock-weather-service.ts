@@ -367,9 +367,95 @@ export function generateMockWeatherData(
   // Generate weather code
   const weatherCode = getRealisticWeatherCode(latitude, currentMonth, 0);
 
-  // Calculate other current conditions
-  const humidity = Math.round(60 + (Math.sin(latitude) * 20) + (Math.random() * 20));
-  const windSpeed = Math.round(5 + Math.random() * 15);
+  // Calculate humidity based on weather conditions and location
+  let humidity: number;
+  const absoluteLatitude = Math.abs(latitude);
+
+  // Base humidity from location (tropical = higher, polar = lower)
+  let baseHumidity = 50;
+  if (absoluteLatitude < 23.5) {
+    baseHumidity = 75; // Tropical - high humidity
+  } else if (absoluteLatitude < 35) {
+    baseHumidity = 60; // Subtropical - moderate-high humidity
+  } else if (absoluteLatitude < 55) {
+    baseHumidity = 55; // Temperate - moderate humidity
+  } else {
+    baseHumidity = 65; // Polar - variable, often humid due to cold
+  }
+
+  // Adjust humidity based on weather conditions
+  if (weatherCode >= 95) {
+    // Thunderstorm - very high humidity
+    humidity = Math.round(baseHumidity + 20 + (Math.random() * 10));
+  } else if (weatherCode >= 80) {
+    // Rain showers - high humidity
+    humidity = Math.round(baseHumidity + 15 + (Math.random() * 10));
+  } else if (weatherCode >= 71) {
+    // Snow - high humidity (cold air holds moisture)
+    humidity = Math.round(baseHumidity + 15 + (Math.random() * 10));
+  } else if (weatherCode >= 61) {
+    // Rain - high humidity
+    humidity = Math.round(baseHumidity + 15 + (Math.random() * 10));
+  } else if (weatherCode >= 51) {
+    // Drizzle - high humidity
+    humidity = Math.round(baseHumidity + 10 + (Math.random() * 10));
+  } else if (weatherCode >= 45) {
+    // Fog - very high humidity
+    humidity = Math.round(85 + (Math.random() * 10));
+  } else if (weatherCode === 3) {
+    // Overcast - moderate-high humidity
+    humidity = Math.round(baseHumidity + 5 + (Math.random() * 10));
+  } else if (weatherCode === 2) {
+    // Partly cloudy - moderate humidity
+    humidity = Math.round(baseHumidity + (Math.random() * 10 - 5));
+  } else {
+    // Clear - lower humidity, varies with temperature
+    const tempHumidityAdjust = currentTemp > 25 ? -10 : currentTemp < 5 ? 10 : 0;
+    humidity = Math.round(baseHumidity - 10 + tempHumidityAdjust + (Math.random() * 15));
+  }
+
+  // Clamp humidity to realistic range (20-100)
+  humidity = Math.max(20, Math.min(100, humidity));
+
+  // Calculate wind speed based on weather conditions
+  let windSpeed: number;
+
+  if (weatherCode >= 95) {
+    // Thunderstorm - strong winds
+    windSpeed = Math.round(25 + (Math.random() * 20));
+  } else if (weatherCode >= 82) {
+    // Violent rain showers - strong winds
+    windSpeed = Math.round(20 + (Math.random() * 15));
+  } else if (weatherCode >= 75) {
+    // Heavy snow - moderate-strong winds
+    windSpeed = Math.round(18 + (Math.random() * 15));
+  } else if (weatherCode >= 71) {
+    // Light/moderate snow - moderate winds
+    windSpeed = Math.round(12 + (Math.random() * 10));
+  } else if (weatherCode >= 61) {
+    // Rain - moderate winds
+    windSpeed = Math.round(10 + (Math.random() * 12));
+  } else if (weatherCode >= 51) {
+    // Drizzle - light-moderate winds
+    windSpeed = Math.round(8 + (Math.random() * 8));
+  } else if (weatherCode === 3) {
+    // Overcast - light-moderate winds
+    windSpeed = Math.round(8 + (Math.random() * 10));
+  } else if (weatherCode === 2) {
+    // Partly cloudy - light winds
+    windSpeed = Math.round(5 + (Math.random() * 10));
+  } else {
+    // Clear - calm to light winds
+    windSpeed = Math.round(3 + (Math.random() * 8));
+  }
+
+  // Add latitude-based wind adjustment (higher latitudes = windier)
+  if (absoluteLatitude > 50) {
+    windSpeed = Math.round(windSpeed * 1.3);
+  } else if (absoluteLatitude > 40) {
+    windSpeed = Math.round(windSpeed * 1.1);
+  }
+
   const cloudCover = weatherCode === 0 ? Math.round(Math.random() * 20) :
                      weatherCode <= 2 ? Math.round(30 + Math.random() * 40) :
                      Math.round(70 + Math.random() * 30);
