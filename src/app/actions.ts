@@ -87,8 +87,44 @@ const backendData: MockWeatherData = generateMockWeatherData(cityData.latitude, 
   }
 }
 
-export async function rateForecast(rating: number, city: string) {
-  console.log(`Rating for ${city}: ${rating} stars`);
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return { message: `Thank you for rating the forecast for ${city}!` };
+/**
+ * Submit a forecast rating
+ * @param rating - Star rating (1-5)
+ * @param city - City name for the rated forecast
+ * @returns Promise with success/error message
+ */
+export async function rateForecast(
+  rating: number,
+  city: string
+): Promise<{ message?: string; error?: string }> {
+  // Validate rating range
+  if (rating < 1 || rating > 5 || !Number.isInteger(rating)) {
+    return {
+      error: "Rating must be an integer between 1 and 5 stars."
+    };
+  }
+
+  // Validate city name
+  if (!city || city.trim() === '') {
+    return {
+      error: "City name is required for rating submission."
+    };
+  }
+
+  try {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // In production, this would save to a database
+    console.log(`[RATING] ${city}: ${rating} stars (${new Date().toISOString()})`);
+
+    return {
+      message: `Thank you for rating the forecast for ${city}!`
+    };
+  } catch (error) {
+    console.error('Error submitting rating:', error);
+    return {
+      error: "Failed to submit rating. Please try again."
+    };
+  }
 }

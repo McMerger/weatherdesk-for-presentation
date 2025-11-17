@@ -24,11 +24,22 @@ export function Rating({ city }: RatingProps) {
     setIsSubmitting(true);
     const result = await rateForecast(rating, city);
     setIsSubmitting(false);
-    setSubmitted(true);
-    toast({
-      title: "Rating Submitted",
-      description: result.message,
-    });
+
+    if (result.error) {
+      // Show error toast
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: result.error,
+      });
+    } else {
+      // Show success
+      setSubmitted(true);
+      toast({
+        title: "Rating Submitted",
+        description: result.message,
+      });
+    }
   };
 
   if (submitted) {

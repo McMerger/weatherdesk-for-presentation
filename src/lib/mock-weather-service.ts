@@ -462,6 +462,11 @@ export function generateMockWeatherData(
 export function searchCity(cityName: string): CityCoordinates | null {
   const normalizedSearch = cityName.toLowerCase().trim();
 
+  // Return null for empty searches
+  if (normalizedSearch === '') {
+    return null;
+  }
+
   // Exact match first
   if (CITY_DATABASE[normalizedSearch]) {
     return CITY_DATABASE[normalizedSearch];
