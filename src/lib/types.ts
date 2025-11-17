@@ -26,6 +26,12 @@ export interface ForecastDay {
 }
 
 /**
+ * Type alias for component compatibility
+ * ForecastCard component uses DailyForecast naming
+ */
+export type DailyForecast = ForecastDay;
+
+/**
  * Complete weather data for a location
  */
 export interface WeatherData {
