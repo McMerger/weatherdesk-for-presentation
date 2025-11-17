@@ -2,7 +2,7 @@
 
 import type { WeatherData, WeatherState } from "@/lib/types";
 import { z } from "zod";
-import { searchCity, WEATHER_CODES, type MockWeatherData } from "@/lib/mock-weather-service";
+import { searchCity, WEATHER_CODES, type MockWeatherData, generateMockWeatherData } from "@/lib/mock-weather-service";
 
 
 /**
@@ -71,23 +71,7 @@ export async function getWeather(
     }
 
     // Call our local mock backend API
-    const response = await fetch(
-          `/api/weather?latitude=${cityData.latitude}&longitude=${cityData.longitude}`,
-      {
-        method: "GET",
-        cache: "no-store", // Ensure fresh data for demo purposes
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return {
-        error: errorData.error || `Failed to fetch weather data. Status: ${response.status}`,
-      };
-    }
-
-    const backendData: MockWeatherData = await response.json();
-
+const backendData: MockWeatherData = generateMockWeatherData(cityData.latitude, cityData.longitude, cityData.timezone || "UTC");
     // Transform backend data to match frontend format
     const weatherData = transformBackendData(backendData, cityData.name);
 
