@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FavoritesTabs } from "./favorites-tabs";
 import { SettingsDialog } from "./settings-dialog";
+import { ThemeToggle } from "./theme-toggle";
 import { useUserPreferences } from "@/contexts/user-preferences-context";
 
 const initialState: WeatherState = {
@@ -170,6 +171,7 @@ export function WeatherDashboard() {
             </form>
           </CardContent>
         </Card>
+        <ThemeToggle />
         <SettingsDialog />
       </div>
 
