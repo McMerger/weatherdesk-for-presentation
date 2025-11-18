@@ -1,30 +1,27 @@
 "use client";
 
-import { Sun, Moon, Clock } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
-// simple toggle button that cycles through: auto -> light -> dark -> auto
+// simple toggle button that cycles between light and dark modes
 export function ThemeToggle() {
   const { mode, setMode } = useTheme();
 
-  // click to cycle: auto -> light -> dark -> auto
+  // click to toggle: light <-> dark
   const cycleMode = () => {
-    if (mode === "auto") {
-      setMode("light");
-    } else if (mode === "light") {
+    if (mode === "light") {
       setMode("dark");
     } else {
-      setMode("auto");
+      setMode("light");
     }
   };
 
   // pick icon based on current mode
-  const Icon = mode === "auto" ? Clock : mode === "light" ? Sun : Moon;
+  const Icon = mode === "light" ? Sun : Moon;
 
   // tooltip text for user to understand what's active
   const getLabel = () => {
-    if (mode === "auto") return "Auto (time-based)";
     if (mode === "light") return "Light mode";
     return "Dark mode";
   };

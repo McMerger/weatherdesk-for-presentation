@@ -20,7 +20,8 @@ type FeelsLikeDescription = {
 
 function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription {
   const { condition, temperatureCelsius, humidity, windSpeedMps } = weather;
-  const temp = temperatureCelsius;
+  // Convert Celsius to Fahrenheit for threshold comparisons
+  const temp = (temperatureCelsius * 9/5) + 32;
   const windSpeed = windSpeedMps * 3.6; // Convert m/s to km/h for comparisons
 
   // Extreme heat combinations

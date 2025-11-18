@@ -87,46 +87,70 @@ body {
   }
 }
 
-/* Glassmorphism styles */
+/* Glassmorphism styles - dark mode by default */
 @layer components {
   .glass {
-    @apply backdrop-blur-md bg-white/10 dark:bg-black/20;
-    @apply border border-white/20 dark:border-white/10;
+    @apply backdrop-blur-md bg-black/20;
+    @apply border border-white/10;
     @apply shadow-xl;
   }
 
+  .light .glass {
+    @apply bg-white/10 border-white/20;
+  }
+
   .glass-card {
-    @apply backdrop-blur-lg bg-white/20 dark:bg-black/30;
-    @apply border border-white/30 dark:border-white/10;
+    @apply backdrop-blur-lg bg-black/30;
+    @apply border border-white/10;
     @apply rounded-2xl shadow-2xl;
     @apply transition-all duration-300;
   }
 
+  .light .glass-card {
+    @apply bg-white/20 border-white/30;
+  }
+
   .glass-card:hover {
-    @apply bg-white/30 dark:bg-black/40;
-    @apply border-white/40 dark:border-white/20;
+    @apply bg-black/40 border-white/20;
     @apply shadow-2xl;
   }
 
+  .light .glass-card:hover {
+    @apply bg-white/30 border-white/40;
+  }
+
   .glass-header {
-    @apply backdrop-blur-xl bg-white/30 dark:bg-black/40;
-    @apply border-b border-white/20 dark:border-white/10;
+    @apply backdrop-blur-xl bg-black/40;
+    @apply border-b border-white/10;
     @apply shadow-lg;
   }
 
+  .light .glass-header {
+    @apply bg-white/30 border-b-white/20;
+  }
+
   .glass-input {
-    @apply backdrop-blur-md bg-white/20 dark:bg-black/30;
-    @apply border border-white/30 dark:border-white/15;
-    @apply focus:bg-white/30 dark:focus:bg-black/40;
-    @apply focus:border-white/50 dark:focus:border-white/30;
+    @apply backdrop-blur-md bg-black/30;
+    @apply border border-white/15;
+    @apply focus:bg-black/40 focus:border-white/30;
     @apply transition-all duration-200;
   }
 
+  .light .glass-input {
+    @apply bg-white/20 border-white/30;
+    @apply focus:bg-white/30 focus:border-white/50;
+  }
+
   .glass-button {
-    @apply backdrop-blur-md bg-white/20 dark:bg-black/30;
-    @apply border border-white/30 dark:border-white/15;
-    @apply hover:bg-white/30 dark:hover:bg-black/40;
+    @apply backdrop-blur-md bg-black/30;
+    @apply border border-white/15;
+    @apply hover:bg-black/40;
     @apply active:scale-95;
     @apply transition-all duration-200;
+  }
+
+  .light .glass-button {
+    @apply bg-white/20 border-white/30;
+    @apply hover:bg-white/30;
   }
 }

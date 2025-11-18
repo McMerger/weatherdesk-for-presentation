@@ -14,9 +14,9 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // default to auto mode - let time decide
-  const [mode, setMode] = useState<ThemeMode>("auto");
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  // default to dark mode - users can manually switch
+  const [mode, setMode] = useState<ThemeMode>("dark");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   // figure out if it's daytime based on local clock
   // simple: 7am-7pm = light, everything else = dark

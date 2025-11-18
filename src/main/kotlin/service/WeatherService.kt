@@ -21,8 +21,23 @@ class WeatherService(private val client: HttpClient) {
     private val geocodingService = GeocodingService(client)
     private val forecastBaseUrl = "https://api.open-meteo.com/v1/forecast"
 
+    // Simple in-memory cache
+    private data class CachedWeather(
+        val data: WeatherData,
+        val timestamp: Long
+    )
+    private val cache = mutableMapOf<String, CachedWeather>()
+    private val cacheExpiryMs = 5 * 60 * 1000 // 5 minutes
+
     // Geocode
     suspend fun getWeatherByCity(city: String): WeatherData? {
+        // Check cache first
+        val cityKey = city.lowercase().trim()
+        val cached = cache[cityKey]
+        if (cached != null && System.currentTimeMillis() - cached.timestamp < cacheExpiryMs) {
+            logger.info { "Returning cached weather for $city" }
+            return cached.data
+        }
         return try {
             val results: List<GeocodingResult> = geocodingService.searchCity(city)
             val location = results.firstOrNull()
@@ -31,7 +46,10 @@ class WeatherService(private val client: HttpClient) {
                 return null // No city found
             }
             logger.info { "Getting weather for $city using coordinates: lat=${location.latitude}, lon=${location.longitude}" }
-            getWeatherByCoordinates(location.latitude, location.longitude, location.name)
+            val weatherData = getWeatherByCoordinates(location.latitude, location.longitude, location.name)
+            // Cache the result
+            cache[cityKey] = CachedWeather(weatherData, System.currentTimeMillis())
+            weatherData
         } catch (e: Exception) {
             logger.error(e) { "Error fetching weather for city: $city" }
             null
