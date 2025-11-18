@@ -9,10 +9,15 @@ type ForecastCardProps = {
   current: CurrentWeather;
 };
 
-function ForecastItem({ day, condition, high, low }: DailyForecast) {
+function ForecastItem({ date, condition, highTempCelsius, lowTempCelsius }: DailyForecast) {
+  // Format day from ISO date string
+  const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
+  const high = Math.round(highTempCelsius);
+  const low = Math.round(lowTempCelsius);
+
   return (
     <div className="flex flex-col items-center gap-2 p-3 bg-secondary/30 rounded-lg text-center">
-      <p className="font-semibold text-sm">{day.substring(0, 3)}</p>
+      <p className="font-semibold text-sm">{dayName}</p>
       <WeatherIcon condition={condition} className="w-10 h-10 text-primary" />
       <div className="flex gap-2 text-sm">
         <span className="font-bold">{high}°</span>
@@ -31,7 +36,7 @@ export function ForecastCard({ forecast, current }: ForecastCardProps) {
       <CardContent>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {forecast.map((dayForecast) => (
-            <ForecastItem key={dayForecast.day} {...dayForecast} />
+            <ForecastItem key={dayForecast.date} {...dayForecast} />
           ))}
         </div>
         <Separator className="my-6" />
