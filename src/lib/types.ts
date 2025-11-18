@@ -145,3 +145,60 @@ export interface RatingData {
   timestamp: Date;
   feedback?: string;
 }
+
+/**
+ * Temperature unit preference
+ */
+export type TemperatureUnit = "celsius" | "fahrenheit";
+
+/**
+ * Wind speed unit preference
+ */
+export type WindSpeedUnit = "kmh" | "mph" | "ms";
+
+/**
+ * Pressure unit preference
+ */
+export type PressureUnit = "hpa" | "inhg" | "mb";
+
+/**
+ * Favorite location
+ */
+export interface FavoriteLocation {
+  id: string;
+  city: string;
+  country?: string;
+  addedAt: string;
+}
+
+/**
+ * User preferences
+ */
+export interface UserPreferences {
+  temperatureUnit: TemperatureUnit;
+  windSpeedUnit: WindSpeedUnit;
+  pressureUnit: PressureUnit;
+  use24HourTime: boolean;
+  showFeelsLike: boolean;
+  showRecommendations: boolean;
+  autoRefresh: boolean;
+  refreshInterval: number; // in minutes
+}
+
+/**
+ * Complete user settings including favorites and preferences
+ */
+export interface UserSettings {
+  favorites: FavoriteLocation[];
+  preferences: UserPreferences;
+}
+
+/**
+ * Daily forecast with proper typing
+ */
+export interface DailyForecast {
+  day: string;
+  high: number;
+  low: number;
+  condition: string;
+}

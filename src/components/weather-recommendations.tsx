@@ -105,10 +105,10 @@ export function WeatherRecommendations({ weather }: WeatherRecommendationsProps)
   const recommendations = getWeatherRecommendations(weather);
 
   return (
-    <Card className="w-full shadow-lg border-primary/20">
+    <Card className="w-full glass-card shadow-2xl border-white/30 dark:border-white/10">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lightbulb className="w-5 h-5 text-primary" />
+        <CardTitle className="flex items-center gap-2 text-white drop-shadow-lg">
+          <Lightbulb className="w-5 h-5 text-yellow-300 drop-shadow-lg" />
           Weather Recommendations
         </CardTitle>
       </CardHeader>
@@ -117,12 +117,12 @@ export function WeatherRecommendations({ weather }: WeatherRecommendationsProps)
           {recommendations.map((rec, index) => (
             <div
               key={index}
-              className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
+              className="flex items-start gap-3 p-3 rounded-lg backdrop-blur-md bg-white/20 dark:bg-black/30 border border-white/20 dark:border-white/10 hover:bg-white/30 dark:hover:bg-black/40 transition-all duration-200"
             >
-              <div className={`mt-0.5 ${rec.color}`}>{rec.icon}</div>
+              <div className={`mt-0.5 ${rec.color} drop-shadow-lg`}>{rec.icon}</div>
               <div className="flex-1">
-                <h4 className="font-semibold text-sm mb-1">{rec.title}</h4>
-                <p className="text-sm text-muted-foreground">{rec.description}</p>
+                <h4 className="font-semibold text-sm mb-1 text-white drop-shadow-md">{rec.title}</h4>
+                <p className="text-sm text-white/80 dark:text-white/70 drop-shadow-sm">{rec.description}</p>
               </div>
             </div>
           ))}
