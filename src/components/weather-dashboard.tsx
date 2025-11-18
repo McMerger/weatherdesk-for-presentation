@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CurrentWeatherCard } from "./current-weather-card";
 import { ForecastCard } from "./forecast-card";
 import { WeatherRecommendations } from "./weather-recommendations";
+import { FeelsLikeWeather } from "./feels-like-weather";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -35,8 +36,9 @@ function WeatherResults({ data, isLoading }: { data: WeatherData | null | undefi
     return (
       <div className="space-y-6 animate-in fade-in-50 duration-500">
         <CurrentWeatherCard data={data.current} />
+        <FeelsLikeWeather weather={data.current} />
         <ForecastCard forecast={data.forecast} current={data.current} />
-              <WeatherRecommendations weather={data.current} />
+        <WeatherRecommendations weather={data.current} />
       </div>
     );
   }
