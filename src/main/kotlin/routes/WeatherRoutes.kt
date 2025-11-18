@@ -36,19 +36,28 @@ fun Application.weatherRoutes(weatherService: WeatherService, ratingService: Rat
             }
         }
 
+        // Public rating endpoint (no auth required for basic functionality)
+        post("/weather/rating") {
+            val principal = call.principal<JWTPrincipal>()
+            val email = principal?.payload?.subject ?: "anonymous"
+            val req = call.receive<RatingRequest>()
+            ratingService.saveRating(email, req)
+            call.respond(HttpStatusCode.OK, mapOf("message" to "Rating saved", "city" to req.city))
+        }
+
+        get("/weather/rating") {
+            val city = call.request.queryParameters["city"] ?: return@get call.respond(HttpStatusCode.BadRequest, "City parameter required")
+            val avg = ratingService.getAverageRating(city)
+            call.respond(HttpStatusCode.OK, mapOf("city" to city, "average" to avg))
+        }
+
+        // Authenticated endpoints for user-specific features
         authenticate("auth-jwt") {
-            post("/weather/rating") {
+            get("/weather/my-ratings") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val email = principal.payload.subject!!
-                val req = call.receive<RatingRequest>()
-                ratingService.saveRating(email, req)
-                call.respond(HttpStatusCode.OK, "Rating saved")
-            }
-
-            get("/weather/rating") {
-                val city = call.request.queryParameters["city"] ?: return@get call.respond(HttpStatusCode.BadRequest)
-                val avg = ratingService.getAverageRating(city)
-                call.respond(HttpStatusCode.OK, mapOf("city" to city, "average" to avg))
+                // Could add method to get user's ratings here
+                call.respond(HttpStatusCode.OK, mapOf("email" to email, "message" to "User ratings endpoint"))
             }
         }
     }
