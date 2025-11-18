@@ -21,8 +21,9 @@ export interface CurrentWeather {
 
 /**
  * Weather forecast for a single day (matches Kotlin backend)
+ * Renamed from ForecastDay to DailyForecast to match Kotlin DTO exactly
  */
-export interface ForecastDay {
+export interface DailyForecast {
   date: string; // ISO date string (LocalDate)
   highTempCelsius: number; // high temperature in Celsius
   lowTempCelsius: number; // low temperature in Celsius
@@ -35,7 +36,7 @@ export interface ForecastDay {
  */
 export interface WeatherData {
   current: CurrentWeather;
-  forecast: ForecastDay[];
+  forecast: DailyForecast[];
 }
 
 /**
@@ -87,7 +88,7 @@ export interface CurrentWeatherCardProps {
  * Forecast card component props
  */
 export interface ForecastCardProps {
-  data: ForecastDay;
+  data: DailyForecast;
 }
 
 /**
@@ -191,14 +192,4 @@ export interface UserPreferences {
 export interface UserSettings {
   favorites: FavoriteLocation[];
   preferences: UserPreferences;
-}
-
-/**
- * Daily forecast with proper typing
- */
-export interface DailyForecast {
-  day: string;
-  high: number;
-  low: number;
-  condition: string;
 }

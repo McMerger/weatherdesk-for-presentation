@@ -19,8 +19,9 @@ type FeelsLikeDescription = {
 };
 
 function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription {
-  const { condition, temperature, humidity, windSpeed } = weather;
-  const temp = temperature;
+  const { condition, temperatureCelsius, humidity, windSpeedMps } = weather;
+  const temp = temperatureCelsius;
+  const windSpeed = windSpeedMps * 3.6; // Convert m/s to km/h for comparisons
 
   // Extreme heat combinations
   if (temp > 95 && humidity > 70) {
@@ -236,12 +237,13 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
   const { preferences } = useUserPreferences();
   const feelsLike = getFeelsLikeDescription(weather);
 
-  // Convert temperature (data is stored in Celsius)
-  const displayTemp = convertTemperature(weather.temperature, "celsius", preferences.temperatureUnit);
+  // Convert temperature from Celsius (backend data)
+  const displayTemp = convertTemperature(weather.temperatureCelsius, "celsius", preferences.temperatureUnit);
   const tempSymbol = getTemperatureSymbol(preferences.temperatureUnit);
 
-  // Convert wind speed (data is stored in km/h)
-  const displayWindSpeed = convertWindSpeed(weather.windSpeed, "kmh", preferences.windSpeedUnit);
+  // Convert wind speed from m/s (backend data) to km/h, then to user preference
+  const windSpeedKmh = weather.windSpeedMps * 3.6;
+  const displayWindSpeed = convertWindSpeed(windSpeedKmh, "kmh", preferences.windSpeedUnit);
   const windSymbol = getWindSpeedSymbol(preferences.windSpeedUnit);
 
   return (
