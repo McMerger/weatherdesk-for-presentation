@@ -14,25 +14,28 @@ type Recommendation = {
 };
 
 function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
-  const { condition, temperature, humidity, windSpeed } = weather;
+  const { condition, temperatureCelsius, humidity, windSpeedMps } = weather;
   const recommendations: Recommendation[] = [];
 
-  // Temperature-based recommendations
-  if (temperature > 80) {
+  // Convert wind speed from m/s to km/h for comparisons
+  const windSpeedKmh = windSpeedMps * 3.6;
+
+  // Temperature-based recommendations (using Celsius)
+  if (temperatureCelsius > 27) { // ~80°F
     recommendations.push({
       icon: <Sun className="w-5 h-5" />,
       title: "Stay Cool",
       description: "It's hot outside! Stay hydrated, wear light clothing, and seek shade during peak hours.",
       color: "text-orange-500",
     });
-  } else if (temperature < 40) {
+  } else if (temperatureCelsius < 4) { // ~40°F
     recommendations.push({
       icon: <Snowflake className="w-5 h-5" />,
       title: "Bundle Up",
       description: "It's cold! Dress in layers, wear a warm coat, and don't forget gloves and a hat.",
       color: "text-blue-400",
     });
-  } else if (temperature >= 60 && temperature <= 75) {
+  } else if (temperatureCelsius >= 15 && temperatureCelsius <= 24) { // ~60-75°F
     recommendations.push({
       icon: <Sun className="w-5 h-5" />,
       title: "Perfect Weather",
@@ -65,8 +68,8 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
     });
   }
 
-  // Wind-based recommendations
-  if (windSpeed > 20) {
+  // Wind-based recommendations (using km/h)
+  if (windSpeedKmh > 32) { // ~20 mph
     recommendations.push({
       icon: <Wind className="w-5 h-5" />,
       title: "Windy Conditions",
