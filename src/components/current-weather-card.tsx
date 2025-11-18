@@ -1,24 +1,72 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import type { CurrentWeather } from "@/lib/types";
 import { WeatherIcon } from "@/components/weather-icon";
-import { Wind, Droplets } from "lucide-react";
+import { Wind, Droplets, Star } from "lucide-react";
+import { useUserPreferences } from "@/contexts/user-preferences-context";
+import { convertTemperature, convertWindSpeed, getTemperatureSymbol, getWindSpeedSymbol } from "@/lib/unit-conversions";
+import { Button } from "@/components/ui/button";
 
 type CurrentWeatherCardProps = {
   data: CurrentWeather;
 };
 
 export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
+  const { preferences, addFavorite, removeFavorite, isFavorite, favorites } = useUserPreferences();
+  const favorite = isFavorite(data.city);
+
+  // Convert temperature (data is stored in Celsius)
+  const displayTemp = convertTemperature(data.temperature, "celsius", preferences.temperatureUnit);
+  const tempSymbol = getTemperatureSymbol(preferences.temperatureUnit);
+
+  // Convert wind speed (data is stored in km/h)
+  const displayWindSpeed = convertWindSpeed(data.windSpeed, "kmh", preferences.windSpeedUnit);
+  const windSymbol = getWindSpeedSymbol(preferences.windSpeedUnit);
+
+  const handleToggleFavorite = () => {
+    if (favorite) {
+      // Find the favorite to remove
+      const favToRemove = favorites.find(
+        (fav) => fav.city.toLowerCase() === data.city.toLowerCase()
+      );
+      if (favToRemove) {
+        removeFavorite(favToRemove.id);
+      }
+    } else {
+      addFavorite(data.city);
+    }
+  };
+
   return (
     <Card className="w-full glass-card shadow-2xl border-white/30 dark:border-white/10">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-white drop-shadow-lg">{data.city}</CardTitle>
-        <CardDescription className="text-white/80 dark:text-white/70">{data.date}</CardDescription>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-3xl font-bold text-white drop-shadow-lg">{data.city}</CardTitle>
+            <CardDescription className="text-white/80 dark:text-white/70">{data.date}</CardDescription>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleToggleFavorite}
+            className="hover:bg-white/10 transition-colors"
+          >
+            <Star
+              className={`w-6 h-6 transition-colors ${
+                favorite
+                  ? "text-yellow-300 fill-yellow-300"
+                  : "text-white/50 hover:text-white/70"
+              }`}
+            />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
         <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
           <div className="flex items-start">
-            <span className="text-7xl sm:text-8xl font-bold text-yellow-300 dark:text-yellow-200 drop-shadow-2xl">{data.temperature}</span>
-            <span className="text-2xl sm:text-3xl font-medium mt-2 text-white">°C</span>
+            <span className="text-7xl sm:text-8xl font-bold text-yellow-300 dark:text-yellow-200 drop-shadow-2xl">{displayTemp}</span>
+            <span className="text-2xl sm:text-3xl font-medium mt-2 text-white">{tempSymbol}</span>
           </div>
           <p className="text-xl text-white/90 dark:text-white/80 capitalize font-medium">{data.condition}</p>
         </div>
@@ -31,7 +79,7 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
             </div>
             <div className="flex items-center gap-2">
               <Wind className="w-5 h-5" />
-              <span>{data.windSpeed} km/h</span>
+              <span>{displayWindSpeed} {windSymbol}</span>
             </div>
           </div>
         </div>

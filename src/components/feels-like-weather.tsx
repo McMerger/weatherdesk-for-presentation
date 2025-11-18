@@ -1,6 +1,10 @@
+"use client";
+
 import type { CurrentWeather } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, Cloud, Flame, Snowflake, Wind, Droplets, Zap } from "lucide-react";
+import { useUserPreferences } from "@/contexts/user-preferences-context";
+import { convertTemperature, convertWindSpeed, getTemperatureSymbol, getWindSpeedSymbol } from "@/lib/unit-conversions";
 
 type FeelsLikeWeatherProps = {
   weather: CurrentWeather;
@@ -229,7 +233,16 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 }
 
 export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
+  const { preferences } = useUserPreferences();
   const feelsLike = getFeelsLikeDescription(weather);
+
+  // Convert temperature (data is stored in Celsius)
+  const displayTemp = convertTemperature(weather.temperature, "celsius", preferences.temperatureUnit);
+  const tempSymbol = getTemperatureSymbol(preferences.temperatureUnit);
+
+  // Convert wind speed (data is stored in km/h)
+  const displayWindSpeed = convertWindSpeed(weather.windSpeed, "kmh", preferences.windSpeedUnit);
+  const windSymbol = getWindSpeedSymbol(preferences.windSpeedUnit);
 
   return (
     <Card className="w-full glass-card shadow-2xl border-white/30 dark:border-white/10 overflow-hidden">
@@ -259,7 +272,7 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
           <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/20">
             <div className="text-center">
               <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Temp</p>
-              <p className="text-lg font-bold text-white drop-shadow-md">{weather.temperature}°C</p>
+              <p className="text-lg font-bold text-white drop-shadow-md">{displayTemp}{tempSymbol}</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Humidity</p>
@@ -267,7 +280,7 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
             </div>
             <div className="text-center">
               <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Wind</p>
-              <p className="text-lg font-bold text-white drop-shadow-md">{weather.windSpeed} km/h</p>
+              <p className="text-lg font-bold text-white drop-shadow-md">{displayWindSpeed} {windSymbol}</p>
             </div>
           </div>
         </div>
