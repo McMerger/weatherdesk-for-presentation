@@ -67,3 +67,7 @@ config.properties
 # Logs
 logs/
 *.log
+
+# SQLite Database
+weather_app.db
+*.db

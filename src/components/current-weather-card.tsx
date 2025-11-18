@@ -16,12 +16,21 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
   const { preferences, addFavorite, removeFavorite, isFavorite, favorites } = useUserPreferences();
   const favorite = isFavorite(data.city);
 
-  // Convert temperature (data is stored in Celsius)
-  const displayTemp = convertTemperature(data.temperature, "celsius", preferences.temperatureUnit);
+  // Format date from ISO string
+  const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Convert temperature from Celsius (backend data) to user preference
+  const displayTemp = convertTemperature(data.temperatureCelsius, "celsius", preferences.temperatureUnit);
   const tempSymbol = getTemperatureSymbol(preferences.temperatureUnit);
 
-  // Convert wind speed (data is stored in km/h)
-  const displayWindSpeed = convertWindSpeed(data.windSpeed, "kmh", preferences.windSpeedUnit);
+  // Convert wind speed from m/s (backend data) to user preference
+  const windSpeedKmh = data.windSpeedMps * 3.6; // Convert m/s to km/h first
+  const displayWindSpeed = convertWindSpeed(windSpeedKmh, "kmh", preferences.windSpeedUnit);
   const windSymbol = getWindSpeedSymbol(preferences.windSpeedUnit);
 
   const handleToggleFavorite = () => {
@@ -44,7 +53,7 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-3xl font-bold text-white drop-shadow-lg">{data.city}</CardTitle>
-            <CardDescription className="text-white/80 dark:text-white/70">{data.date}</CardDescription>
+            <CardDescription className="text-white/80 dark:text-white/70">{formattedDate}</CardDescription>
           </div>
           <Button
             variant="ghost"

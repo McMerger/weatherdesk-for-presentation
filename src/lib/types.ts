@@ -4,25 +4,30 @@
  */
 
 /**
- * Current weather conditions
+ * Current weather conditions (matches Kotlin backend)
  */
 export interface CurrentWeather {
   city: string;
-  temperature: number; // in Fahrenheit
+  temperatureCelsius: number; // in Celsius
   condition: string; // e.g., "Clear", "Cloudy", "Rain"
+  conditionDescription: string; // detailed description
   humidity: number; // 0-100 percentage
-  windSpeed: number; // in mph
-  date: string; // formatted date string
+  windSpeedMps: number; // in meters per second
+  date: string; // ISO date string (LocalDate)
+  latitude?: number;
+  longitude?: number;
+  isDay: boolean;
 }
 
 /**
- * Weather forecast for a single day
+ * Weather forecast for a single day (matches Kotlin backend)
  */
 export interface ForecastDay {
-  day: string; // day name, e.g., "Monday"
-  high: number; // high temperature in Fahrenheit
-  low: number; // low temperature in Fahrenheit
+  date: string; // ISO date string (LocalDate)
+  highTempCelsius: number; // high temperature in Celsius
+  lowTempCelsius: number; // low temperature in Celsius
   condition: string; // weather condition
+  conditionDescription: string; // detailed description
 }
 
 /**

@@ -13,16 +13,19 @@ type ForecastCardProps = {
   current: CurrentWeather;
 };
 
-function ForecastItem({ day, condition, high, low }: DailyForecast) {
+function ForecastItem({ date, condition, highTempCelsius, lowTempCelsius }: DailyForecast) {
   const { preferences } = useUserPreferences();
 
-  // Convert temperatures (data is stored in Celsius)
-  const displayHigh = convertTemperature(high, "celsius", preferences.temperatureUnit);
-  const displayLow = convertTemperature(low, "celsius", preferences.temperatureUnit);
+  // Format day from ISO date string
+  const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
+
+  // Convert temperatures from Celsius (backend data) to user preference
+  const displayHigh = convertTemperature(highTempCelsius, "celsius", preferences.temperatureUnit);
+  const displayLow = convertTemperature(lowTempCelsius, "celsius", preferences.temperatureUnit);
 
   return (
     <div className="flex flex-col items-center gap-2 p-3 backdrop-blur-md bg-white/20 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-lg text-center hover:bg-white/30 dark:hover:bg-black/40 transition-all duration-200">
-      <p className="font-semibold text-sm text-white drop-shadow-md">{day.substring(0, 3)}</p>
+      <p className="font-semibold text-sm text-white drop-shadow-md">{dayName}</p>
       <WeatherIcon condition={condition} className="w-10 h-10 text-white drop-shadow-lg" />
       <div className="flex gap-2 text-sm">
         <span className="font-bold text-white drop-shadow-md">{displayHigh}°</span>
@@ -41,7 +44,7 @@ export function ForecastCard({ forecast, current }: ForecastCardProps) {
       <CardContent>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {forecast.map((dayForecast) => (
-            <ForecastItem key={dayForecast.day} {...dayForecast} />
+            <ForecastItem key={dayForecast.date} {...dayForecast} />
           ))}
         </div>
         <Separator className="my-6 bg-white/20" />

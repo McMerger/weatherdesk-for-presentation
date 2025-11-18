@@ -1,6 +1,13 @@
 /**
  * Mock Weather Service
- * Provides realistic weather data for demo and testing purposes
+ *
+ * ⚠️ DEPRECATED - This file is no longer used in production
+ *
+ * The application now uses the Kotlin backend which fetches REAL weather data
+ * from OpenMeteo API. This file is kept for reference and testing purposes only.
+ *
+ * All weather data now comes from: src/main/kotlin/service/WeatherService.kt
+ * which calls https://api.open-meteo.com/v1/forecast
  */
 
 export interface CityCoordinates {
