@@ -32,12 +32,12 @@ export function Rating({ city }: RatingProps) {
   };
 
   if (submitted) {
-    return <p className="text-sm text-center text-green-600">Thanks for your feedback!</p>;
+    return <p className="text-sm text-center text-green-300 font-semibold drop-shadow-md">Thanks for your feedback!</p>;
   }
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <p className="text-sm font-medium text-muted-foreground">How accurate was the forecast?</p>
+      <p className="text-sm font-medium text-white/90 drop-shadow-md">How accurate was the forecast?</p>
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
@@ -51,16 +51,16 @@ export function Rating({ city }: RatingProps) {
           >
             <Star
               className={cn(
-                "w-6 h-6 transition-colors",
+                "w-6 h-6 transition-colors drop-shadow-lg",
                 (hoverRating >= star || rating >= star)
-                  ? "text-accent fill-accent"
-                  : "text-muted-foreground/30"
+                  ? "text-yellow-300 fill-yellow-300"
+                  : "text-white/30"
               )}
             />
           </button>
         ))}
       </div>
-       <Button onClick={handleRate} disabled={isSubmitting || rating === 0} size="sm" variant="outline" className="mt-1">
+       <Button onClick={handleRate} disabled={isSubmitting || rating === 0} size="sm" className="mt-1 glass-button text-white font-semibold">
         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin"/> : 'Submit Rating'}
       </Button>
     </div>

@@ -91,3 +91,4 @@ export async function rateForecast(rating: number, city: string) {
   console.log(`Rating for ${city}: ${rating} stars`);
   await new Promise((resolve) => setTimeout(resolve, 500));
   return { message: `Thank you for rating the forecast for ${city}!` };
+}
