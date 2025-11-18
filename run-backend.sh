@@ -18,12 +18,20 @@ echo "📦 Building Kotlin backend..."
 echo "This may take a few minutes on first run (downloading dependencies)"
 echo ""
 
-# Use gradlew if it exists and has execute permissions, otherwise use system gradle
-if [ -x "./gradlew" ]; then
-    BUILD_CMD="./gradlew"
-else
+# Check if system gradle is available
+if command -v gradle &> /dev/null; then
     BUILD_CMD="gradle"
+    echo "Using system Gradle: $(gradle --version | head -3 | tail -1)"
+elif [ -x "./gradlew" ]; then
+    BUILD_CMD="./gradlew"
+    echo "Using Gradle wrapper"
+else
+    echo "❌ Error: Gradle not found"
+    echo "Please install Gradle or ensure ./gradlew is executable"
+    exit 1
 fi
+
+echo ""
 
 # Build the project
 $BUILD_CMD clean build --no-daemon
