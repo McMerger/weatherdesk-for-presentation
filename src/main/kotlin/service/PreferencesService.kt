@@ -1,9 +1,7 @@
+// user preferences service
 package service
 
-import model.UserPreferences
-import model.TemperatureUnit
-import model.WindSpeedUnit
-import model.ThemeMode
+import model.*
 import org.intellij.lang.annotations.Language
 import java.sql.DriverManager
 
@@ -12,33 +10,20 @@ interface PreferencesService {
     suspend fun savePreferences(userEmail: String, prefs: UserPreferences)
 }
 
+// user preferences sqlite service
 class SqlitePreferencesService(private val jdbcUrl: String = "jdbc:sqlite:weather_app.db") : PreferencesService {
     init {
         DriverManager.getConnection(jdbcUrl).use { conn ->
             @Language("SQLite")
-            val createTableSql = """
-                CREATE TABLE IF NOT EXISTS preferences (
-                  email TEXT PRIMARY KEY,
-                  preferredTempUnit TEXT,
-                  preferredWindUnit TEXT,
-                  theme TEXT,
-                  lastSearchedCity TEXT,
-                  lastSearchedLatitude REAL,
-                  lastSearchedLongitude REAL,
-                  updatedAt INTEGER
-                );
-            """.trimIndent()
-            conn.createStatement().use { stmt ->
-                stmt.execute(createTableSql)
-            }
+            val sql = "CREATE TABLE IF NOT EXISTS preferences (email TEXT PRIMARY KEY, preferredTempUnit TEXT, preferredWindUnit TEXT, theme TEXT, lastSearchedCity TEXT, lastSearchedLatitude REAL, lastSearchedLongitude REAL, updatedAt INTEGER);"
+            conn.createStatement().use { it.execute(sql) }
         }
     }
 
     override suspend fun getPreferences(userEmail: String): UserPreferences? {
         DriverManager.getConnection(jdbcUrl).use { conn ->
             @Language("SQLite")
-            val sql = "SELECT * FROM preferences WHERE email = ?"
-            conn.prepareStatement(sql).use { ps ->
+            conn.prepareStatement("SELECT * FROM preferences WHERE email = ?").use { ps ->
                 ps.setString(1, userEmail)
                 val rs = ps.executeQuery()
                 if (rs.next()) {
@@ -59,18 +44,7 @@ class SqlitePreferencesService(private val jdbcUrl: String = "jdbc:sqlite:weathe
     override suspend fun savePreferences(userEmail: String, prefs: UserPreferences) {
         DriverManager.getConnection(jdbcUrl).use { conn ->
             @Language("SQLite")
-            val sql = """
-                INSERT INTO preferences (email, preferredTempUnit, preferredWindUnit, theme, lastSearchedCity, lastSearchedLatitude, lastSearchedLongitude, updatedAt)
-                VALUES (?,?,?,?,?,?,?,?)
-                ON CONFLICT(email) DO UPDATE SET
-                 preferredTempUnit = excluded.preferredTempUnit,
-                 preferredWindUnit = excluded.preferredWindUnit,
-                 theme = excluded.theme,
-                 lastSearchedCity = excluded.lastSearchedCity,
-                 lastSearchedLatitude = excluded.lastSearchedLatitude,
-                 lastSearchedLongitude = excluded.lastSearchedLongitude,
-                 updatedAt = excluded.updatedAt
-            """.trimIndent()
+            val sql = "INSERT INTO preferences (email, preferredTempUnit, preferredWindUnit, theme, lastSearchedCity, lastSearchedLatitude, lastSearchedLongitude, updatedAt) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(email) DO UPDATE SET preferredTempUnit = excluded.preferredTempUnit, preferredWindUnit = excluded.preferredWindUnit, theme = excluded.theme, lastSearchedCity = excluded.lastSearchedCity, lastSearchedLatitude = excluded.lastSearchedLatitude, lastSearchedLongitude = excluded.lastSearchedLongitude, updatedAt = excluded.updatedAt"
             conn.prepareStatement(sql).use { ps ->
                 ps.setString(1, userEmail)
                 ps.setString(2, prefs.preferredTempUnit.name)

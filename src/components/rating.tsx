@@ -1,3 +1,4 @@
+// rating component for weather forecasts
 "use client";
 
 import { useState } from 'react';
@@ -12,6 +13,7 @@ type RatingProps = {
   city: string;
 };
 
+// star rating component for forecast accuracy
 export function Rating({ city }: RatingProps) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -31,6 +33,7 @@ export function Rating({ city }: RatingProps) {
     });
   };
 
+  // show thank you message after submitting
   if (submitted) {
     return <p className="text-sm text-center text-green-300 font-semibold drop-shadow-md">Thanks for your feedback!</p>;
   }

@@ -1,3 +1,4 @@
+// root layout component
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -5,10 +6,11 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { UserPreferencesProvider } from '@/contexts/user-preferences-context';
 
 export const metadata: Metadata = {
-  title: 'WeatherDesk',
+  title: 'LunaWeather',
   description: 'Your personal weather station',
 };
 
+// root layout - wraps everything
 export default function RootLayout({
   children,
 }: Readonly<{

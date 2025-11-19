@@ -1,118 +1,107 @@
-# WeatherDesk
+# LunaWeather
 
-A modern weather application built with Next.js and React, featuring real-time weather data, forecasts, and AI-powered weather recommendations.
+A modern, full-stack weather application with real-time weather data, forecasts, and personalized weather insights.
 
 ## Features
 
-- **Real-Time Weather Data**: Fetch current weather conditions from OpenMeteo API
-- **5-Day Forecast**: View detailed weather predictions with hourly breakdowns
-- **City Search**: Look up weather for any location worldwide
-- **Weather Recommendations**: AI-powered suggestions for activities based on current conditions
-- **Responsive Design**: Beautiful, mobile-friendly interface built with Tailwind CSS
-- **Modern UI Components**: Leveraging shadcn/ui for a polished user experience
-- **Server Actions**: Efficient data fetching with Next.js server-side capabilities
+- **Real-Time Weather Data**: Live weather conditions from OpenMeteo API
+- **5-Day Forecast**: Detailed weather predictions with high/low temperatures
+- **Global City Search**: Look up weather for any location worldwide
+- **"Feels Like" Descriptions**: Quirky, relatable weather condition descriptions
+- **Weather Recommendations**: Smart suggestions based on current conditions
+- **Theme Support**: Light and dark mode with smooth transitions
+- **Favorites & Preferences**: Save locations and customize display settings
+- **Responsive Design**: Beautiful glass-morphism UI that works on all devices
 
 ## Tech Stack
 
 ### Frontend
 - **Next.js 14** - React framework with App Router
 - **TypeScript** - Type-safe development
-- **React** - UI component library
-- **Tailwind CSS** - Utility-first styling
-- **shadcn/ui** - High-quality component system
-- **Lucide React** - Icon library
+- **Tailwind CSS** - Modern styling
+- **shadcn/ui** - Premium component library
 
-### APIs & Services
+### Backend
+- **Kotlin** - Type-safe backend development
+- **Ktor** - Async web framework
 - **OpenMeteo API** - Weather data provider
-- **Firebase Genkit** - AI integration capabilities
+- **Nominatim** - Geocoding service
 
-## Project Structure
-
-```
-WeatherDesk/
-├── src/
-│   ├── app/              # Next.js app directory
-│   │   ├── actions.ts    # Server actions for data fetching
-│   │   ├── layout.tsx    # Root layout
-│   │   ├── page.tsx      # Home page
-│   │   └── globals.css   # Global styles
-│   ├── components/       # React components
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utility functions
-│   └── ai/               # AI integration (Genkit)
-├── public/               # Static assets
-└── package.json          # Dependencies
-```
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
-
-- Node.js 18+ and npm
-- A backend API endpoint (optional - can use OpenMeteo directly)
+- Node.js 18+
+- Java 17+ (for backend)
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository**
 ```bash
-git clone https://github.com/McMerger/WeatherDesk.git
-cd WeatherDesk
+git clone https://github.com/McMerger/LunaWeather.git
+cd LunaWeather
 ```
 
-2. Install dependencies:
+2. **Install frontend dependencies**
 ```bash
 npm install
 ```
 
-3. Run the development server:
+3. **Start the backend server**
+```bash
+./run-backend.sh
+```
+Backend runs on `http://localhost:8080`
+
+4. **Start the frontend** (in a new terminal)
 ```bash
 npm run dev
 ```
+Frontend runs on `http://localhost:3000`
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+## Project Structure
 
-### Build for Production
-
-```bash
-npm run build
-npm start
+```
+LunaWeather/
+├── src/
+│   ├── app/                    # Next.js pages
+│   ├── components/             # React components
+│   ├── contexts/               # React contexts
+│   ├── lib/                    # Utilities
+│   └── main/kotlin/            # Kotlin backend
+│       ├── model/              # Data models
+│       ├── service/            # Business logic
+│       └── Main.kt             # Server entry point
+├── build.gradle.kts            # Kotlin build config
+├── package.json                # Node dependencies
+└── run-backend.sh              # Backend startup script
 ```
 
-## Features in Detail
+## Available Scripts
 
-### Weather Display
-- Current temperature with real-time updates
-- Weather condition descriptions (sunny, cloudy, rainy, etc.)
-- Humidity and wind speed metrics
-- Day/night detection
+### Frontend
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
 
-### Forecast View
-- 5-day weather forecast
-- Daily high/low temperatures
-- Weather condition icons
-- Easy-to-read card layout
+### Backend
+- `./run-backend.sh` - Build and run backend server
+- `./gradlew build` - Build backend only
 
-### City Search
-- Search for any city worldwide
-- Predefined popular cities for quick access
-- Coordinate-based weather lookup support
+## API Endpoints
 
-## Backend Integration
+The backend provides the following endpoints:
 
-This frontend is designed to work with a separate backend service. The frontend handles:
-- User interface and interactions
-- Weather data display and formatting
-- AI-powered recommendations
-- Responsive design and animations
+- `GET /weather?city=<city_name>` - Get weather data for a city
+- `POST /weather/rating` - Submit weather rating
 
-The backend should provide:
-- Weather data endpoints
-- API authentication (if required)
-- Data processing and caching
+## Customization
 
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
+### User Preferences
+- Temperature units (Celsius/Fahrenheit)
+- Wind speed units (km/h, mph, m/s)
+- Toggle "Feels Like" descriptions
+- Toggle weather recommendations
+- Auto-refresh settings
 
 ## License
 
@@ -120,6 +109,7 @@ MIT License - feel free to use this project for your own purposes.
 
 ## Acknowledgments
 
-- Weather data provided by [OpenMeteo API](https://open-meteo.com/)
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
-- Built with [Next.js](https://nextjs.org/)
+- Weather data: [OpenMeteo API](https://open-meteo.com/)
+- Geocoding: [Nominatim](https://nominatim.openstreetmap.org/)
+- UI components: [shadcn/ui](https://ui.shadcn.com/)
+- Framework: [Next.js](https://nextjs.org/)

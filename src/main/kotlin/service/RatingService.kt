@@ -1,3 +1,4 @@
+// rating service for forecast ratings
 package service
 
 import model.RatingRequest
@@ -12,23 +13,13 @@ interface RatingService {
     suspend fun getAverageRating(city: String): Double?
 }
 
+// sqlite rating service
 class SqliteRatingService(private val jdbcUrl: String = "jdbc:sqlite:weather_app.db") : RatingService {
     init {
         DriverManager.getConnection(jdbcUrl).use { conn ->
             @Language("SQLite")
-            val createTableSql = """
-                CREATE TABLE IF NOT EXISTS ratings (
-                  id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  city TEXT NOT NULL,
-                  rating INTEGER NOT NULL,
-                  userEmail TEXT,
-                  date TEXT,
-                  createdAt INTEGER
-                );
-            """.trimIndent()
-            conn.createStatement().use { stmt ->
-                stmt.execute(createTableSql)
-            }
+            val createTableSql = "CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT NOT NULL, rating INTEGER NOT NULL, userEmail TEXT, date TEXT, createdAt INTEGER);"
+            conn.createStatement().use { it.execute(createTableSql) }
         }
     }
 

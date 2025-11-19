@@ -1,3 +1,4 @@
+// main entry point for the kotlin backend
 import routes.*
 import service.*
 import database.DatabaseFactory
@@ -16,7 +17,10 @@ import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+// just basic logging
 val logger = KotlinLogging.logger {}
+
+// adapter for gson to handle LocalDate properly
 val localDateAdapter: JsonSerializer<LocalDate> = object : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
@@ -39,6 +43,7 @@ fun main() {
 }
 
 fun Application.module() {
+    // cors so frontend can talk to us
     install(CORS) {
         allowHost("localhost:9002", schemes = listOf("http", "https"))
         allowHost("localhost:3000", schemes = listOf("http", "https"))
@@ -52,6 +57,7 @@ fun Application.module() {
         allowCredentials = true
     }
 
+    // setup json handling
     install(ContentNegotiation) {
         gson {
             setPrettyPrinting()
@@ -62,12 +68,14 @@ fun Application.module() {
         }
     }
 
+    // setup services
     val httpClient = WeatherService.defaultClient()
     val weatherService = WeatherService(httpClient)
     val geocodingService = GeocodingService(httpClient)
     val ratingService = SqliteRatingService("jdbc:sqlite:weather_app.db")
     val preferencesService = SqlitePreferencesService("jdbc:sqlite:weather_app.db")
 
+    // register routes
     confSecurity()
     weatherRoutes(weatherService, ratingService)
     preferencesRoutes(preferencesService)

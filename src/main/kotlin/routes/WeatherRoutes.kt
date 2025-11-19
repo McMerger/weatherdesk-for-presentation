@@ -1,3 +1,4 @@
+// weather api routes
 package routes
 
 import io.ktor.http.*
@@ -11,14 +12,17 @@ import model.RatingRequest
 import service.RatingService
 import service.WeatherService
 
+// main weather api routes
 fun Application.weatherRoutes(weatherService: WeatherService, ratingService: RatingService) {
     routing {
+        // get weather by city or coordinates
         get("/weather") {
             val city = call.request.queryParameters["city"]
             val lat = call.request.queryParameters["lat"]?.toDoubleOrNull()
             val lon = call.request.queryParameters["lon"]?.toDoubleOrNull()
 
             try {
+                // either city name or lat/lon
                 val data = when {
                     !city.isNullOrBlank() -> weatherService.getWeatherByCity(city)
                     lat != null && lon != null -> weatherService.getWeatherByCoordinates(lat, lon)
@@ -36,7 +40,7 @@ fun Application.weatherRoutes(weatherService: WeatherService, ratingService: Rat
             }
         }
 
-        // Public rating endpoint (no auth required for basic functionality)
+        // rating endpoint - no auth required
         post("/weather/rating") {
             val principal = call.principal<JWTPrincipal>()
             val email = principal?.payload?.subject ?: "anonymous"
@@ -45,18 +49,19 @@ fun Application.weatherRoutes(weatherService: WeatherService, ratingService: Rat
             call.respond(HttpStatusCode.OK, mapOf("message" to "Rating saved", "city" to req.city))
         }
 
+        // get avg rating for a city
         get("/weather/rating") {
             val city = call.request.queryParameters["city"] ?: return@get call.respond(HttpStatusCode.BadRequest, "City parameter required")
             val avg = ratingService.getAverageRating(city)
             call.respond(HttpStatusCode.OK, mapOf("city" to city, "average" to avg))
         }
 
-        // Authenticated endpoints for user-specific features
+        // auth protected stuff
         authenticate("auth-jwt") {
             get("/weather/my-ratings") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val email = principal.payload.subject!!
-                // Could add method to get user's ratings here
+                // TODO: actually implement this
                 call.respond(HttpStatusCode.OK, mapOf("email" to email, "message" to "User ratings endpoint"))
             }
         }

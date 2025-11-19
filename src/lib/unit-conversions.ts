@@ -1,67 +1,67 @@
+// temperature and wind unit conversions
 import type { TemperatureUnit, WindSpeedUnit } from "./types";
 
-/**
- * Convert temperature between units
- */
-export function convertTemperature(value: number, from: TemperatureUnit, to: TemperatureUnit): number {
+// temp conversions
+export function convertTemperature(
+  value: number,
+  from: TemperatureUnit,
+  to: TemperatureUnit
+): number {
   if (from === to) return Math.round(value);
 
+  // celsius to fahrenheit
   if (from === "celsius" && to === "fahrenheit") {
-    return Math.round((value * 9/5) + 32);
+    return Math.round((value * 9) / 5 + 32);
   }
 
+  // fahrenheit to celsius
   if (from === "fahrenheit" && to === "celsius") {
-    return Math.round((value - 32) * 5/9);
+    return Math.round(((value - 32) * 5) / 9);
   }
 
   return Math.round(value);
 }
 
-/**
- * Convert wind speed between units
- */
-export function convertWindSpeed(value: number, from: WindSpeedUnit, to: WindSpeedUnit): number {
+// wind speed conversions
+export function convertWindSpeed(
+  value: number,
+  from: WindSpeedUnit,
+  to: WindSpeedUnit
+): number {
   if (from === to) return Math.round(value);
 
-  // Convert to m/s first (base unit)
-  let inMs: number;
+  let kmh: number;
+
+  // convert everything to km/h first
   switch (from) {
     case "kmh":
-      inMs = value / 3.6;
+      kmh = value;
       break;
     case "mph":
-      inMs = value / 2.237;
+      kmh = value * 1.60934;
       break;
     case "ms":
-      inMs = value;
+      kmh = value * 3.6;
       break;
-    default:
-      inMs = value;
   }
 
-  // Convert from m/s to target unit
+  // then convert to target unit
   switch (to) {
     case "kmh":
-      return Math.round(inMs * 3.6);
+      return Math.round(kmh);
     case "mph":
-      return Math.round(inMs * 2.237);
+      return Math.round(kmh / 1.60934);
     case "ms":
-      return Math.round(inMs);
+      return Math.round(kmh / 3.6);
     default:
-      return Math.round(inMs);
+      return Math.round(kmh);
   }
 }
 
-/**
- * Get temperature unit symbol
- */
 export function getTemperatureSymbol(unit: TemperatureUnit): string {
   return unit === "celsius" ? "°C" : "°F";
 }
 
-/**
- * Get wind speed unit symbol
- */
 export function getWindSpeedSymbol(unit: WindSpeedUnit): string {
   switch (unit) {
     case "kmh":
@@ -70,21 +70,5 @@ export function getWindSpeedSymbol(unit: WindSpeedUnit): string {
       return "mph";
     case "ms":
       return "m/s";
-    default:
-      return "km/h";
   }
-}
-
-/**
- * Format temperature with unit
- */
-export function formatTemperature(value: number, unit: TemperatureUnit): string {
-  return `${value}${getTemperatureSymbol(unit)}`;
-}
-
-/**
- * Format wind speed with unit
- */
-export function formatWindSpeed(value: number, unit: WindSpeedUnit): string {
-  return `${value} ${getWindSpeedSymbol(unit)}`;
 }

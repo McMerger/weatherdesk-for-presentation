@@ -1,3 +1,4 @@
+// favorites tabs for saved cities
 "use client";
 
 import { useState } from "react";
@@ -23,6 +24,7 @@ interface FavoritesTabsProps {
   onAddFavorite?: () => void;
 }
 
+// shows favorite cities as clickable tabs
 export function FavoritesTabs({ currentCity, onCitySelect, onAddFavorite }: FavoritesTabsProps) {
   const { favorites, removeFavorite, isFavorite, clearAllFavorites } = useUserPreferences();
   const [activeTab, setActiveTab] = useState<string | null>(currentCity);
@@ -40,6 +42,7 @@ export function FavoritesTabs({ currentCity, onCitySelect, onAddFavorite }: Favo
     }
   };
 
+  // show empty state if no favorites yet
   if (favorites.length === 0) {
     return (
       <div className="glass-card p-6 text-center border-white/30 dark:border-white/10">

@@ -1,8 +1,10 @@
+// user preferences context
 "use client";
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { UserPreferences, FavoriteLocation, UserSettings } from "@/lib/types";
 
+// default settings if user hasnt changed anything yet
 const DEFAULT_PREFERENCES: UserPreferences = {
   temperatureUnit: "celsius",
   windSpeedUnit: "kmh",
@@ -26,12 +28,13 @@ interface UserPreferencesContextType {
 
 const UserPreferencesContext = createContext<UserPreferencesContextType | undefined>(undefined);
 
+// provider that manages user settings and favorites
 export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<UserPreferences>(DEFAULT_PREFERENCES);
   const [favorites, setFavorites] = useState<FavoriteLocation[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load settings from localStorage on mount
+  // load saved settings when app starts
   useEffect(() => {
     try {
       const stored = localStorage.getItem("weatherdesk-settings");
@@ -47,9 +50,9 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Save settings to localStorage whenever they change
+  // save to localstorage whenever something changes
   useEffect(() => {
-    if (!isLoaded) return; // Don't save on initial load
+    if (!isLoaded) return; // skip first render
 
     try {
       const settings: UserSettings = {
@@ -75,7 +78,7 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
       addedAt: new Date().toISOString(),
     };
     setFavorites((prev) => {
-      // Check if city already exists (case-insensitive)
+      // dont add duplicates
       const exists = prev.some(
         (fav) => fav.city.toLowerCase() === city.toLowerCase()
       );
@@ -115,6 +118,7 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// hook to access user preferences anywhere
 export function useUserPreferences() {
   const context = useContext(UserPreferencesContext);
   if (context === undefined) {

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# WeatherDesk Backend Startup Script
+# LunaWeather Backend Startup Script
 # This script builds and runs the Kotlin backend server
 
-echo "🚀 WeatherDesk Backend Startup"
+echo "🚀 LunaWeather Backend Startup"
 echo "================================"
 echo ""
 
@@ -63,7 +63,7 @@ if [ -z "$JAR_FILE" ]; then
     exit 1
 fi
 
-echo "🎯 Starting WeatherDesk backend server..."
+echo "🎯 Starting LunaWeather backend server..."
 echo "Server will run on: http://localhost:8080"
 echo ""
 echo "Available endpoints:"

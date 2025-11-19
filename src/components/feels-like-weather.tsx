@@ -1,3 +1,4 @@
+// feels like temperature visualization
 "use client";
 
 import type { CurrentWeather } from "@/lib/types";
@@ -18,16 +19,16 @@ type FeelsLikeDescription = {
   gradient: string;
 };
 
+// figure out what the weather actually feels like with funny descriptions
 function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription {
   const { condition, temperatureCelsius, humidity, windSpeedMps } = weather;
-  // Convert Celsius to Fahrenheit for threshold comparisons
-  const temp = (temperatureCelsius * 9/5) + 32;
-  const windSpeed = windSpeedMps * 3.6; // Convert m/s to km/h for comparisons
+  const temp = (temperatureCelsius * 9/5) + 32; // using fahrenheit for thresholds cause easier
+  const windSpeed = windSpeedMps * 3.6;
 
-  // Extreme heat combinations
+  // really hot + humid = bad time
   if (temp > 95 && humidity > 70) {
     return {
-      icon: <Flame className="w-6 h-6" />,
+      icon: <Flame className="w-full h-full" />,
       title: "Like a sauna wearing a wool sweater",
       description: "The air is so thick you could spread it on toast. Mother Nature cranked the difficulty slider to 'survival mode.' Even your sweat is sweating.",
       emoji: "🥵",
@@ -37,7 +38,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp > 95) {
     return {
-      icon: <Flame className="w-6 h-6" />,
+      icon: <Flame className="w-full h-full" />,
       title: "Like standing inside a pizza oven",
       description: "The sidewalk could double as a griddle. Satan called—he wants his thermostat back. You're not hot, you're medium-rare.",
       emoji: "🔥",
@@ -47,7 +48,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp > 85 && humidity > 70) {
     return {
-      icon: <Droplets className="w-6 h-6" />,
+      icon: <Droplets className="w-full h-full" />,
       title: "Like swimming through hot soup",
       description: "The air has the consistency of warm Jell-O. It's not just humid, it's aggressively moist. Your clothes are having an identity crisis.",
       emoji: "💦",
@@ -57,7 +58,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp > 85) {
     return {
-      icon: <Flame className="w-6 h-6" />,
+      icon: <Flame className="w-full h-full" />,
       title: "Like a hairdryer on full blast",
       description: "Step outside and instantly understand what popcorn feels like. The sun isn't just shining, it's showing off. Ice cream has a 30-second lifespan.",
       emoji: "☀️",
@@ -65,10 +66,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Pleasant weather
+  // nice weather
   if (temp >= 65 && temp <= 75 && condition.toLowerCase().includes("clear")) {
     return {
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Sparkles className="w-full h-full" />,
       title: "Like nature's perfect thermostat",
       description: "Goldilocks would be jealous. This is the weather that makes you forgive all past weather crimes. Birds are singing your favorite songs. Main character energy.",
       emoji: "✨",
@@ -78,7 +79,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp >= 65 && temp <= 75) {
     return {
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Sparkles className="w-full h-full" />,
       title: "Like being inside a perfect dream",
       description: "Mother Nature is showing off her A+ work. Not too hot, not too cold—it's the meteorological sweet spot. Cancel your AC subscription.",
       emoji: "🌟",
@@ -86,10 +87,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Cold weather
+  // cold + windy
   if (temp < 20 && windSpeed > 15) {
     return {
-      icon: <Wind className="w-6 h-6" />,
+      icon: <Wind className="w-full h-full" />,
       title: "Like being slapped by frozen ninjas",
       description: "The wind isn't blowing, it's attacking. Your face is practicing to become an ice sculpture. Jack Frost is personally invested in your suffering.",
       emoji: "🥶",
@@ -99,7 +100,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp < 20) {
     return {
-      icon: <Snowflake className="w-6 h-6" />,
+      icon: <Snowflake className="w-full h-full" />,
       title: "Like living in a freezer's freezer",
       description: "Your nose hairs are icicles. Polar bears would complain. The air hurts your face—that's how you know you're alive. Penguins are sending sympathy cards.",
       emoji: "❄️",
@@ -109,7 +110,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp < 32 && condition.toLowerCase().includes("snow")) {
     return {
-      icon: <Snowflake className="w-6 h-6" />,
+      icon: <Snowflake className="w-full h-full" />,
       title: "Like being inside a snow globe",
       description: "Nature's confetti is falling, but it's the kind that freezes your eyelashes. The world is a winter wonderland, and you're the unwilling protagonist.",
       emoji: "⛄",
@@ -119,7 +120,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (temp < 40) {
     return {
-      icon: <Snowflake className="w-6 h-6" />,
+      icon: <Snowflake className="w-full h-full" />,
       title: "Like a very aggressive refrigerator",
       description: "Your breath is visible, and it's judging you for coming outside. Every surface is auditioning to become an ice rink. Layer up or become a human popsicle.",
       emoji: "🧊",
@@ -127,10 +128,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Rainy weather
+  // rainy stuff
   if (condition.toLowerCase().includes("rain") && windSpeed > 15) {
     return {
-      icon: <Cloud className="w-6 h-6" />,
+      icon: <Cloud className="w-full h-full" />,
       title: "Like being in a car wash without the car",
       description: "The rain isn't falling, it's attacking horizontally. Umbrellas are decorative at best. The sky is throwing a very wet tantrum.",
       emoji: "🌧️",
@@ -140,7 +141,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (condition.toLowerCase().includes("rain")) {
     return {
-      icon: <Cloud className="w-6 h-6" />,
+      icon: <Cloud className="w-full h-full" />,
       title: "Like the sky is crying... aggressively",
       description: "Mother Nature left the tap running. Your umbrella is a suggestion, not a solution. Ducks are loving this; you probably aren't.",
       emoji: "☔",
@@ -150,7 +151,7 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
 
   if (condition.toLowerCase().includes("drizzle")) {
     return {
-      icon: <Cloud className="w-6 h-6" />,
+      icon: <Cloud className="w-full h-full" />,
       title: "Like walking through a cloud's mist",
       description: "Not quite raining, not quite misting—nature's version of 'let me think about it.' Your hair is frizzing in solidarity. The sky is being passive-aggressive.",
       emoji: "🌦️",
@@ -158,10 +159,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Stormy weather
+  // stormy
   if (condition.toLowerCase().includes("thunder") || condition.toLowerCase().includes("storm")) {
     return {
-      icon: <Zap className="w-6 h-6" />,
+      icon: <Zap className="w-full h-full" />,
       title: "Like the sky is having a meltdown",
       description: "Thor is throwing a house party upstairs. Nature's light show with surround sound. The weather app should come with a warning label. Zeus is working overtime.",
       emoji: "⛈️",
@@ -169,10 +170,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Windy conditions
+  // windy
   if (windSpeed > 25) {
     return {
-      icon: <Wind className="w-6 h-6" />,
+      icon: <Wind className="w-full h-full" />,
       title: "Like being in nature's wind tunnel",
       description: "The wind is personally invested in ruining your hairstyle. Small objects are achieving flight without permission. Mother Nature is power-washing the neighborhood.",
       emoji: "💨",
@@ -180,10 +181,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Cloudy/Overcast
+  // cloudy
   if (condition.toLowerCase().includes("cloud") || condition.toLowerCase().includes("overcast")) {
     return {
-      icon: <Cloud className="w-6 h-6" />,
+      icon: <Cloud className="w-full h-full" />,
       title: "Like living inside a mood ring",
       description: "The sky is cosplaying as a gray blanket. Vitamin D is a distant memory. The sun called in sick. Perfect weather for your inner introvert.",
       emoji: "☁️",
@@ -191,10 +192,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // High humidity
+  // humid
   if (humidity > 80 && temp > 70) {
     return {
-      icon: <Droplets className="w-6 h-6" />,
+      icon: <Droplets className="w-full h-full" />,
       title: "Like wearing a warm wet towel",
       description: "The air is 90% moisture, 10% questionable. You're not sweating, you're marinating. Fish are jealous of the humidity levels. Breathing requires effort.",
       emoji: "💧",
@@ -202,10 +203,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Moderate conditions (fallback for temp 50-65)
+  // moderate temps
   if (temp >= 50 && temp < 65) {
     return {
-      icon: <Cloud className="w-6 h-6" />,
+      icon: <Cloud className="w-full h-full" />,
       title: "Like a lukewarm hug from nature",
       description: "Not bad, not great—the Switzerland of weather. Your jacket is playing hard to get. The kind of day that makes you question all your clothing choices.",
       emoji: "😐",
@@ -213,10 +214,10 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Clear/Sunny default
+  // sunny default
   if (condition.toLowerCase().includes("clear") || condition.toLowerCase().includes("sun")) {
     return {
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Sparkles className="w-full h-full" />,
       title: "Like sunshine gave you a high-five",
       description: "The sky is blue, the vibes are immaculate. Mother Nature is in a good mood. Main character walking to their favorite song energy. Sunglasses required.",
       emoji: "😎",
@@ -224,9 +225,9 @@ function getFeelsLikeDescription(weather: CurrentWeather): FeelsLikeDescription 
     };
   }
 
-  // Default fallback
+  // fallback
   return {
-    icon: <Cloud className="w-6 h-6" />,
+    icon: <Cloud className="w-full h-full" />,
     title: "Like... weather is happening",
     description: "Nature is doing its thing. The atmosphere is atmospheric. It's outside. That's about it. The weather is weathering.",
     emoji: "🤷",
@@ -238,11 +239,9 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
   const { preferences } = useUserPreferences();
   const feelsLike = getFeelsLikeDescription(weather);
 
-  // Convert temperature from Celsius (backend data)
   const displayTemp = convertTemperature(weather.temperatureCelsius, "celsius", preferences.temperatureUnit);
   const tempSymbol = getTemperatureSymbol(preferences.temperatureUnit);
 
-  // Convert wind speed from m/s (backend data) to km/h, then to user preference
   const windSpeedKmh = weather.windSpeedMps * 3.6;
   const displayWindSpeed = convertWindSpeed(windSpeedKmh, "kmh", preferences.windSpeedUnit);
   const windSymbol = getWindSpeedSymbol(preferences.windSpeedUnit);
@@ -251,39 +250,39 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
     <Card className="w-full glass-card shadow-2xl border-white/30 dark:border-white/10 overflow-hidden">
       <div className={`absolute inset-0 bg-gradient-to-br ${feelsLike.gradient} opacity-10`} />
       <CardHeader className="relative">
-        <CardTitle className="flex items-center gap-3 text-white drop-shadow-lg">
-          <span className="text-3xl">{feelsLike.emoji}</span>
+        <CardTitle className="flex items-center gap-3 text-2xl sm:text-3xl text-white drop-shadow-lg">
+          <span className="text-4xl">{feelsLike.emoji}</span>
           <span>Feels like...</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="relative">
-        <div className="space-y-4">
-          <div className="flex items-start gap-3">
-            <div className={`mt-1 text-white/90 drop-shadow-lg bg-gradient-to-br ${feelsLike.gradient} p-2 rounded-lg`}>
-              {feelsLike.icon}
+        <div className="space-y-5">
+          <div className="flex items-start gap-4">
+            <div className={`mt-1 text-white/90 drop-shadow-lg bg-gradient-to-br ${feelsLike.gradient} p-3 rounded-lg`}>
+              <div className="w-7 h-7 sm:w-8 sm:h-8">{feelsLike.icon}</div>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-lg mb-2 text-white drop-shadow-md">
+              <h3 className="font-bold text-xl sm:text-2xl mb-3 text-white drop-shadow-md">
                 {feelsLike.title}
               </h3>
-              <p className="text-white/90 dark:text-white/80 leading-relaxed drop-shadow-sm">
+              <p className="text-base sm:text-lg text-white/90 dark:text-white/80 leading-relaxed drop-shadow-sm">
                 {feelsLike.description}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/20">
+          <div className="grid grid-cols-3 gap-4 pt-5 border-t border-white/20">
             <div className="text-center">
-              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Temp</p>
-              <p className="text-lg font-bold text-white drop-shadow-md">{displayTemp}{tempSymbol}</p>
+              <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Temp</p>
+              <p className="text-xl sm:text-2xl font-bold text-white drop-shadow-md">{displayTemp}{tempSymbol}</p>
             </div>
             <div className="text-center">
-              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Humidity</p>
-              <p className="text-lg font-bold text-white drop-shadow-md">{weather.humidity}%</p>
+              <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Humidity</p>
+              <p className="text-xl sm:text-2xl font-bold text-white drop-shadow-md">{weather.humidity}%</p>
             </div>
             <div className="text-center">
-              <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Wind</p>
-              <p className="text-lg font-bold text-white drop-shadow-md">{displayWindSpeed} {windSymbol}</p>
+              <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Wind</p>
+              <p className="text-xl sm:text-2xl font-bold text-white drop-shadow-md">{displayWindSpeed} {windSymbol}</p>
             </div>
           </div>
         </div>

@@ -1,31 +1,16 @@
+// error boundary to catch app crashes
 "use client";
-
 import React from "react";
 import { AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-}
+interface ErrorBoundaryProps { children: React.ReactNode; }
+interface ErrorBoundaryState { hasError: boolean; error: Error | null; }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
-  }
+  constructor(props: ErrorBoundaryProps) { super(props); this.state = { hasError: false, error: null }; }
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState { return { hasError: true, error }; }
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) { console.error("ErrorBoundary caught an error:", error, errorInfo); }
 
   render() {
     if (this.state.hasError) {
@@ -39,9 +24,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                The application encountered an error. This usually happens due to:
-              </p>
+              <p className="text-sm text-muted-foreground">The application encountered an error. This usually happens due to:</p>
               <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
                 <li>Missing dependencies (run `npm install`)</li>
                 <li>Browser cache issues (try hard refresh)</li>
@@ -50,23 +33,15 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               {this.state.error && (
                 <details className="text-xs">
                   <summary className="cursor-pointer font-medium">Technical details</summary>
-                  <pre className="mt-2 p-2 bg-muted rounded overflow-auto">
-                    {this.state.error.toString()}
-                  </pre>
+                  <pre className="mt-2 p-2 bg-muted rounded overflow-auto">{this.state.error.toString()}</pre>
                 </details>
               )}
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-              >
-                Reload Page
-              </button>
+              <button onClick={() => window.location.reload()} className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">Reload Page</button>
             </CardContent>
           </Card>
         </div>
       );
     }
-
     return this.props.children;
   }
 }

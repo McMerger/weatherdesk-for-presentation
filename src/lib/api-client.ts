@@ -1,13 +1,8 @@
-/**
- * API Client for Kotlin Backend
- * Handles all HTTP requests to the weather backend
- */
+// api client for talking to the kotlin backend
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-/**
- * Fetch weather data for a city from Kotlin backend
- */
+// get weather for a city
 export async function fetchWeather(city: string) {
   try {
     const response = await fetch(
@@ -33,9 +28,7 @@ export async function fetchWeather(city: string) {
   }
 }
 
-/**
- * Submit weather rating to Kotlin backend
- */
+// send rating to backend
 export async function submitRating(rating: number, city: string) {
   try {
     const response = await fetch(`${API_URL}/api/rating`, {
@@ -58,9 +51,7 @@ export async function submitRating(rating: number, city: string) {
   }
 }
 
-/**
- * Search for cities (optional - if backend supports)
- */
+// search cities - not really using this yet
 export async function searchCities(query: string) {
   try {
     const response = await fetch(
@@ -80,7 +71,7 @@ export async function searchCities(query: string) {
     return await response.json();
   } catch (error) {
     console.error('API Error (searchCities):', error);
-    // return empty array if search fails - not critical
+    // just return empty if it fails, no big deal
     return [];
   }
 }

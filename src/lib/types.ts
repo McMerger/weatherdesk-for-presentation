@@ -1,56 +1,39 @@
-/**
- * TypeScript type definitions for WeatherDesk
- * Provides type safety for weather data and component props
- */
+// weather data types
 
-/**
- * Current weather conditions (matches Kotlin backend)
- */
 export interface CurrentWeather {
   city: string;
-  temperatureCelsius: number; // in Celsius
-  condition: string; // e.g., "Clear", "Cloudy", "Rain"
-  conditionDescription: string; // detailed description
-  humidity: number; // 0-100 percentage
-  windSpeedMps: number; // in meters per second
-  date: string; // ISO date string (LocalDate)
+  temperatureCelsius: number;
+  condition: string;
+  conditionDescription: string;
+  humidity: number;
+  windSpeedMps: number; // in m/s
+  date: string;
   latitude?: number;
   longitude?: number;
   isDay: boolean;
 }
 
-/**
- * Weather forecast for a single day (matches Kotlin backend)
- * Renamed from ForecastDay to DailyForecast to match Kotlin DTO exactly
- */
+// forecast for one day
 export interface DailyForecast {
-  date: string; // ISO date string (LocalDate)
-  highTempCelsius: number; // high temperature in Celsius
-  lowTempCelsius: number; // low temperature in Celsius
-  condition: string; // weather condition
-  conditionDescription: string; // detailed description
+  date: string;
+  highTempCelsius: number;
+  lowTempCelsius: number;
+  condition: string;
+  conditionDescription: string;
 }
 
-/**
- * Complete weather data for a location
- */
 export interface WeatherData {
   current: CurrentWeather;
   forecast: DailyForecast[];
 }
 
-/**
- * State for weather form submission
- */
 export interface WeatherState {
   weatherData?: WeatherData;
   error?: string;
   message?: string;
 }
 
-/**
- * Backend API response from WeatherDesk23
- */
+// backend response stuff
 export interface BackendWeatherResponse {
   longitude: number;
   latitude: number;
@@ -62,64 +45,40 @@ export interface BackendWeatherResponse {
   };
 }
 
-/**
- * City coordinates mapping
- */
 export interface CityCoordinates {
   lat: number;
   lng: number;
 }
 
-/**
- * Weather dashboard component props
- */
+// component props
 export interface WeatherDashboardProps {
   initialState?: WeatherState;
 }
 
-/**
- * Current weather card component props
- */
 export interface CurrentWeatherCardProps {
   data: CurrentWeather;
 }
 
-/**
- * Forecast card component props
- */
 export interface ForecastCardProps {
   data: DailyForecast;
 }
 
-/**
- * Error response structure
- */
 export interface ErrorResponse {
   error: string;
   timestamp?: string;
   details?: Record<string, unknown>;
 }
 
-/**
- * Success response structure
- */
 export interface SuccessResponse<T> {
   data: T;
   message?: string;
   timestamp?: string;
 }
 
-/**
- * API response type (either success or error)
- */
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
-/**
- * Supported weather conditions
- */
 export type WeatherCondition =
   | "Clear"
-  | "Cloudy"
   | "Cloudy"
   | "Overcast"
   | "Mist"
@@ -128,43 +87,24 @@ export type WeatherCondition =
   | "Snow"
   | "Thunderstorm";
 
-/**
- * Configuration for API calls
- */
 export interface ApiConfig {
   baseUrl: string;
   timeout: number;
   retryAttempts: number;
 }
 
-/**
- * Rating submission data
- */
 export interface RatingData {
-  rating: number; // 1-5 stars
+  rating: number;
   city: string;
   timestamp: Date;
   feedback?: string;
 }
 
-/**
- * Temperature unit preference
- */
+// user settings stuff
 export type TemperatureUnit = "celsius" | "fahrenheit";
-
-/**
- * Wind speed unit preference
- */
 export type WindSpeedUnit = "kmh" | "mph" | "ms";
-
-/**
- * Pressure unit preference
- */
 export type PressureUnit = "hpa" | "inhg" | "mb";
 
-/**
- * Favorite location
- */
 export interface FavoriteLocation {
   id: string;
   city: string;
@@ -172,9 +112,6 @@ export interface FavoriteLocation {
   addedAt: string;
 }
 
-/**
- * User preferences
- */
 export interface UserPreferences {
   temperatureUnit: TemperatureUnit;
   windSpeedUnit: WindSpeedUnit;
@@ -183,12 +120,9 @@ export interface UserPreferences {
   showFeelsLike: boolean;
   showRecommendations: boolean;
   autoRefresh: boolean;
-  refreshInterval: number; // in minutes
+  refreshInterval: number; // minutes
 }
 
-/**
- * Complete user settings including favorites and preferences
- */
 export interface UserSettings {
   favorites: FavoriteLocation[];
   preferences: UserPreferences;

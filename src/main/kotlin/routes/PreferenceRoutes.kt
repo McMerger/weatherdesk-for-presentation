@@ -1,3 +1,4 @@
+// user preferences routes
 package routes
 
 import io.ktor.http.*
@@ -10,21 +11,17 @@ import io.ktor.server.routing.*
 import model.UserPreferences
 import service.PreferencesService
 
+// user preferences routes
 fun Application.preferencesRoutes(preferencesService: PreferencesService) {
     routing {
         authenticate("auth-jwt") {
             get("/user/preferences") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val email = principal.payload.subject!!
-                val prefs = preferencesService.getPreferences(email)
-                call.respond(HttpStatusCode.OK, prefs ?: UserPreferences())
+                val email = call.principal<JWTPrincipal>()!!.payload.subject!!
+                call.respond(HttpStatusCode.OK, preferencesService.getPreferences(email) ?: UserPreferences())
             }
-
             post("/user/preferences") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val email = principal.payload.subject!!
-                val prefs = call.receive<UserPreferences>()
-                preferencesService.savePreferences(email, prefs)
+                val email = call.principal<JWTPrincipal>()!!.payload.subject!!
+                preferencesService.savePreferences(email, call.receive<UserPreferences>())
                 call.respond(HttpStatusCode.OK, "Preferences saved")
             }
         }

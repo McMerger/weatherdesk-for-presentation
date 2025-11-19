@@ -1,3 +1,4 @@
+// submit button with loading state
 "use client";
 
 import { useFormStatus } from "react-dom";
@@ -9,6 +10,7 @@ type Props = ComponentProps<typeof Button> & {
   children: React.ReactNode;
 };
 
+// button that shows spinner when form is submitting
 export function SubmitButton({ children, ...props }: Props) {
   const { pending } = useFormStatus();
 

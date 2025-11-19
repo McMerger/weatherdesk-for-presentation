@@ -1,9 +1,11 @@
+// database setup and table schemas
 package database
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.Database
 
+// user table schema
 object UserDetails : Table() {
     val id = integer("id").autoIncrement()
     val email = varchar("email", 255).uniqueIndex()
@@ -12,6 +14,7 @@ object UserDetails : Table() {
     override val primaryKey = PrimaryKey(id)
 }
 
+// saved locations table
 object Locations : Table() {
     val id = integer("id").autoIncrement()
     val userEmail = varchar("user_email", 255).references(UserDetails.email)
@@ -23,6 +26,7 @@ object Locations : Table() {
     override val primaryKey = PrimaryKey(id)
 }
 
+// db setup - using sqlite
 object DatabaseFactory {
     fun init() {
         Database.connect("jdbc:sqlite:weather_app.db", driver = "org.sqlite.JDBC")

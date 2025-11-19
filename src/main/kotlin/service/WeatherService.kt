@@ -1,3 +1,4 @@
+// weather service - handles api calls
 package service
 
 import com.google.gson.annotations.SerializedName
@@ -22,17 +23,17 @@ class WeatherService(private val client: HttpClient) {
     private val geocodingService = GeocodingService(client)
     private val forecastBaseUrl = "https://api.open-meteo.com/v1/forecast"
 
-    // Simple in-memory cache
+    // simple cache to avoid hitting api too much
     private data class CachedWeather(
         val data: WeatherData,
         val timestamp: Long
     )
     private val cache = mutableMapOf<String, CachedWeather>()
-    private val cacheExpiryMs = 5 * 60 * 1000 // 5 minutes
+    private val cacheExpiryMs = 5 * 60 * 1000 // 5 mins
 
-    // Geocode
+    // get weather by city name
     suspend fun getWeatherByCity(city: String): WeatherData? {
-        // Check cache first
+        // check cache first
         val cityKey = city.lowercase().trim()
         val cached = cache[cityKey]
         if (cached != null && System.currentTimeMillis() - cached.timestamp < cacheExpiryMs) {
@@ -44,11 +45,11 @@ class WeatherService(private val client: HttpClient) {
             val location = results.firstOrNull()
             if (location == null) {
                 logger.warn { "City not found: $city" }
-                return null // No city found
+                return null
             }
             logger.info { "Getting weather for $city using coordinates: lat=${location.latitude}, lon=${location.longitude}" }
             val weatherData = getWeatherByCoordinates(location.latitude, location.longitude, location.name)
-            // Cache the result
+            // save to cache
             cache[cityKey] = CachedWeather(weatherData, System.currentTimeMillis())
             weatherData
         } catch (e: Exception) {
@@ -57,9 +58,11 @@ class WeatherService(private val client: HttpClient) {
         }
     }
 
+    // get weather using lat/lon coordinates
     suspend fun getWeatherByCoordinates(lat: Double, lon: Double, cityName: String? = null): WeatherData {
         logger.info { "Fetching weather for coordinates: $lat, $lon" }
 
+        // build api url with all the params we need
         val url = "$forecastBaseUrl?latitude=$lat&longitude=$lon" +
                 "&current_weather=true&hourly=relativehumidity_2m" +
                 "&daily=temperature_2m_max,temperature_2m_min,weathercode" +
@@ -71,7 +74,7 @@ class WeatherService(private val client: HttpClient) {
             res
         } catch (e: Exception) {
             logger.error(e) { "Failed to fetch OpenMeteo data" }
-            // Return default empty weather data instead of throwing
+            // just return empty data if api fails
             return WeatherData(
                 current = CurrentWeather(
                     city = cityName ?: "$lat,$lon",
@@ -94,11 +97,11 @@ class WeatherService(private val client: HttpClient) {
             )
         }
 
-        // Safely extract current weather
+        // extract current weather data
         val currentData = response.current
         val dailyData = response.daily
 
-        // If either current weather or daily weather response is empty, returns an empty weather data and forecast
+        // if data is missing just return empty stuff
         if (currentData == null || dailyData == null) {
             logger.warn { "Incomplete weather data: current=$currentData, daily=$dailyData" }
             return WeatherData(
@@ -123,13 +126,13 @@ class WeatherService(private val client: HttpClient) {
             )
         }
 
-        // Extracts humidity
+        // get humidity from hourly data
         val humidity = response.hourly?.let { hourly ->
             val index = hourly.time.indexOf(currentData.time)
             if (index != -1 && index < hourly.humidity.size) hourly.humidity[index] else 0
         } ?: 0
 
-        // Map daily forecast
+        // map the daily forecast data
         val forecast = dailyData.time.mapIndexed { i, dateStr ->
             DailyForecast(
                 date = try { LocalDate.parse(dateStr) } catch (e: Exception) { logger.info(e) {"Giving local date instead to daily forecast"}; LocalDate.now() },
@@ -140,7 +143,7 @@ class WeatherService(private val client: HttpClient) {
             )
         }
 
-        // Saves weather data and forecast
+        // put it all together
         return WeatherData(
             current = CurrentWeather(
                 city = cityName ?: "${response.latitude},${response.longitude}",
@@ -163,7 +166,7 @@ class WeatherService(private val client: HttpClient) {
         )
     }
 
-    // Date parser
+    // parse date string to LocalDate
     private fun parseDate(dateTimeStr: String): LocalDate {
         return try {
             LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ISO_DATE_TIME)
@@ -174,6 +177,7 @@ class WeatherService(private val client: HttpClient) {
         }
     }
 
+    // convert weather codes to readable conditions
     private fun weatherCodeToCondition(code: Int): String =
         when (code) {
             0 -> "CLEAR"
@@ -224,7 +228,7 @@ class WeatherService(private val client: HttpClient) {
         client.close()
     }
 
-    // Uses Steadman/ Australian BOM for Apparent Temperature
+    // calculate feels like temp using steadman formula
     private fun calculateFeelsLike(tempC: Double, windMps: Double, humidity: Int): Double {
         val e = (humidity / 100.0) * 6.105 * exp((17.27 * tempC) / (237.7 + tempC))
         return tempC + 0.33 * e - 0.70 * windMps - 4.0

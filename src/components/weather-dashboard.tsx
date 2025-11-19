@@ -1,3 +1,4 @@
+// main weather dashboard component
 "use client";
 
 import { useActionState, useTransition } from "react";
@@ -20,27 +21,31 @@ import { SettingsDialog } from "./settings-dialog";
 import { ThemeToggle } from "./theme-toggle";
 import { useUserPreferences } from "@/contexts/user-preferences-context";
 
+// just the basic initial state stuff
 const initialState: WeatherState = {
   weatherData: null,
   error: null,
   message: null
 };
 
+// show weather or loading stuff
 function WeatherResults({ data, isLoading }: { data: WeatherData | null | undefined; isLoading: boolean }) {
   const { preferences } = useUserPreferences();
 
+  // loading state - just show some skeletons
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-[230px] w-full rounded-lg" />
+      <div className="space-y-8">
         <Skeleton className="h-[280px] w-full rounded-lg" />
+        <Skeleton className="h-[320px] w-full rounded-lg" />
       </div>
     );
   }
 
+  // got data? show it
   if (data) {
     return (
-      <div className="space-y-6 animate-in fade-in-50 duration-500">
+      <div className="space-y-8 animate-in fade-in-50 duration-500">
         <CurrentWeatherCard data={data.current} />
         {preferences.showFeelsLike && <FeelsLikeWeather weather={data.current} />}
         <ForecastCard forecast={data.forecast} current={data.current} />
@@ -49,18 +54,20 @@ function WeatherResults({ data, isLoading }: { data: WeatherData | null | undefi
     );
   }
 
+  // default welcome screen
   return (
     <Card className="border-dashed glass-card">
-      <CardContent className="p-10 flex flex-col items-center justify-center text-center text-muted-foreground h-96">
-        <CloudSun className="w-16 h-16 mb-4 text-white/70"/>
-        <h3 className="text-lg font-semibold text-white drop-shadow-md">Welcome to WeatherDesk</h3>
-        <p className="text-white/80 drop-shadow-sm">Enter a city to get the latest weather forecast.</p>
+      <CardContent className="p-12 flex flex-col items-center justify-center text-center text-muted-foreground h-96">
+        <CloudSun className="w-24 h-24 sm:w-28 sm:h-28 mb-6 text-white/70"/>
+        <h3 className="text-2xl sm:text-3xl font-semibold text-white drop-shadow-md mb-3">Welcome to LunaWeather</h3>
+        <p className="text-lg sm:text-xl text-white/80 drop-shadow-sm">Enter a city to get the latest weather forecast.</p>
       </CardContent>
     </Card>
   );
 }
 
 
+// main dashboard component
 export function WeatherDashboard() {
   const [state, formAction, isPending] = useActionState(getWeather, initialState);
   const [, startTransition] = useTransition();
@@ -70,6 +77,7 @@ export function WeatherDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
+  // load last searched city when page loads
   useEffect(() => {
     if (initialLoadRef.current) {
       const lastCity = localStorage.getItem('lastCity');
@@ -85,6 +93,7 @@ export function WeatherDashboard() {
     }
   }, [formAction, startTransition]);
 
+  // sync loading state with pending
   useEffect(() => {
     if (isPending) {
       setIsLoading(true);
@@ -93,6 +102,7 @@ export function WeatherDashboard() {
     }
   }, [isPending]);
 
+  // show error toasts and save last city
   useEffect(() => {
     if (state.error && !initialLoadRef.current) {
       toast({
@@ -106,7 +116,7 @@ export function WeatherDashboard() {
     }
   }, [state, toast]);
 
-  // Auto-refresh functionality
+  // auto refresh timer if enabled
   useEffect(() => {
     if (!preferences.autoRefresh || !state.weatherData) return;
 
@@ -146,43 +156,57 @@ export function WeatherDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Settings and Search Bar */}
-      <div className="flex gap-3">
-        <Card className="glass-card shadow-2xl border-white/30 dark:border-white/10 flex-grow">
-          <CardContent className="p-4">
+    <div className="space-y-8">
+      {/* header section */}
+      <header className="w-full my-10">
+        <div className="flex items-center justify-between gap-6">
+          <div className="text-left">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-headline font-bold text-white drop-shadow-lg backdrop-blur-sm bg-white/10 dark:bg-black/20 py-5 px-8 rounded-2xl shadow-2xl border border-white/20 inline-block">
+              LunaWeather
+            </h1>
+            <p className="text-white/90 dark:text-white/80 mt-4 ml-2 text-xl sm:text-2xl font-medium drop-shadow-md">Your personal weather station</p>
+          </div>
+          <div className="flex gap-3 items-center">
+            <ThemeToggle />
+            <SettingsDialog />
+          </div>
+        </div>
+      </header>
+
+      {/* search bar */}
+      <div className="w-full">
+        <Card className="glass-card shadow-2xl border-white/30 dark:border-white/10">
+          <CardContent className="p-5">
             <form ref={formRef} action={formAction}>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <div className="relative flex-grow">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/70 dark:text-white/60" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-6 w-6 text-white/70 dark:text-white/60" />
                   <Input
                     type="text"
                     name="city"
                     placeholder="E.g., London, New York, Tokyo"
-                    className="pl-10 text-base glass-input text-white placeholder:text-white/60 dark:placeholder:text-white/50"
+                    className="pl-11 text-lg glass-input text-white placeholder:text-white/60 dark:placeholder:text-white/50"
                     required
                   />
                 </div>
                 <SubmitButton>
-                  <Search className="h-5 w-5 md:hidden" />
-                  <span className="hidden md:inline">Search</span>
+                  <Search className="h-6 w-6 md:hidden" />
+                  <span className="hidden md:inline text-base">Search</span>
                 </SubmitButton>
               </div>
             </form>
           </CardContent>
         </Card>
-        <ThemeToggle />
-        <SettingsDialog />
       </div>
 
-      {/* Favorites Tabs */}
+      {/* favorites section */}
       <FavoritesTabs
         currentCity={state.weatherData?.current.city || null}
         onCitySelect={handleCitySelect}
         onAddFavorite={handleAddFavorite}
       />
 
-      {/* Weather Results */}
+      {/* weather results display */}
       <WeatherResults data={state.weatherData} isLoading={isLoading} />
     </div>
   );

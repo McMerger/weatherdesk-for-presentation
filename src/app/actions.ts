@@ -1,14 +1,18 @@
+// server actions for weather and auth
 "use server";
 
 import type { WeatherData, WeatherState } from "@/lib/types";
 import { z } from "zod";
 
+// backend url - defaults to localhost for dev
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+// main weather fetch function
 export async function getWeather(
   prevState: WeatherState,
   formData: FormData
 ): Promise<WeatherState> {
+  // basic validation - just make sure city isnt empty
   const schema = z.object({
     city: z.string().min(1, "City name cannot be empty."),
   });
@@ -25,7 +29,7 @@ export async function getWeather(
   const { city } = validatedFields.data;
 
   try {
-    // Call the Kotlin backend API
+    // hit the kotlin backend
     const response = await fetch(`${BACKEND_URL}/weather?city=${encodeURIComponent(city)}`, {
       method: "GET",
       headers: {
@@ -54,6 +58,7 @@ export async function getWeather(
   }
 }
 
+// rating submission - not really using this data yet but whatever
 export async function rateForecast(rating: number, city: string) {
   try {
     const response = await fetch(`${BACKEND_URL}/weather/rating`, {
@@ -64,7 +69,7 @@ export async function rateForecast(rating: number, city: string) {
       body: JSON.stringify({
         city,
         rating,
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString().split('T')[0], // just get the date part
       }),
     });
 
@@ -72,6 +77,7 @@ export async function rateForecast(rating: number, city: string) {
       console.error("Failed to submit rating:", response.statusText);
     }
 
+    // always return success message even if it failed - user doesnt need to know lol
     return { message: `Thank you for rating the forecast for ${city}!` };
   } catch (error) {
     console.error("Error submitting rating:", error);
