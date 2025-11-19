@@ -3,6 +3,7 @@
 export interface CurrentWeather {
   city: string;
   temperatureCelsius: number;
+  feelsLikeCelsius: number;
   condition: string;
   conditionDescription: string;
   humidity: number;

@@ -20,8 +20,9 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
   const recommendations: Recommendation[] = [];
 
   const windSpeedKmh = windSpeedMps * 3.6;
+  const conditionUpper = condition.toUpperCase();
 
-  // hot weather
+  // temperature recommendations - always add one
   if (temperatureCelsius > 27) {
     recommendations.push({
       icon: <Sun className="w-7 h-7 sm:w-8 sm:h-8" />,
@@ -43,33 +44,62 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
       description: "Ideal temperature for outdoor activities! Great day for a walk, jog, or picnic.",
       color: "text-green-500",
     });
+  } else {
+    // moderate temps (4-15°C or 24-27°C)
+    recommendations.push({
+      icon: <Lightbulb className="w-7 h-7 sm:w-8 sm:h-8" />,
+      title: "Moderate Temperature",
+      description: "Comfortable conditions. A light jacket might be useful depending on the time of day.",
+      color: "text-blue-500",
+    });
   }
 
-  // rainy
-  if (condition.toLowerCase().includes("rain") || condition.toLowerCase().includes("drizzle")) {
+  // weather condition recommendations
+  if (conditionUpper.includes("RAIN") || conditionUpper.includes("SHOWER") || conditionUpper.includes("DRIZZLE")) {
     recommendations.push({
       icon: <Umbrella className="w-7 h-7 sm:w-8 sm:h-8" />,
       title: "Bring an Umbrella",
       description: "Rain is expected. Don't forget your umbrella and wear waterproof shoes.",
       color: "text-blue-500",
     });
-  } else if (condition.toLowerCase().includes("snow")) {
+  } else if (conditionUpper.includes("SNOW")) {
     recommendations.push({
       icon: <Snowflake className="w-7 h-7 sm:w-8 sm:h-8" />,
       title: "Snow Day",
       description: "Snowy conditions ahead. Drive carefully, clear walkways, and enjoy winter activities!",
       color: "text-cyan-400",
     });
-  } else if (condition.toLowerCase().includes("clear") || condition.toLowerCase().includes("sun")) {
+  } else if (conditionUpper.includes("CLEAR")) {
     recommendations.push({
       icon: <Sun className="w-7 h-7 sm:w-8 sm:h-8" />,
-      title: "Sunny Day",
+      title: "Clear Skies",
       description: "Clear skies! Perfect for outdoor activities, but don't forget sunscreen.",
       color: "text-yellow-500",
     });
+  } else if (conditionUpper.includes("CLOUD")) {
+    recommendations.push({
+      icon: <Lightbulb className="w-7 h-7 sm:w-8 sm:h-8" />,
+      title: "Cloudy Skies",
+      description: "Overcast conditions. Good for outdoor activities without harsh sun exposure.",
+      color: "text-gray-400",
+    });
+  } else if (conditionUpper.includes("THUNDER") || conditionUpper.includes("STORM")) {
+    recommendations.push({
+      icon: <Umbrella className="w-7 h-7 sm:w-8 sm:h-8" />,
+      title: "Thunderstorm Alert",
+      description: "Thunderstorms expected. Stay indoors, avoid open areas, and postpone outdoor activities.",
+      color: "text-purple-600",
+    });
+  } else if (conditionUpper.includes("MIST") || conditionUpper.includes("FOG")) {
+    recommendations.push({
+      icon: <Droplets className="w-7 h-7 sm:w-8 sm:h-8" />,
+      title: "Reduced Visibility",
+      description: "Misty or foggy conditions. Drive carefully with headlights on and allow extra time.",
+      color: "text-gray-500",
+    });
   }
 
-  // windy
+  // windy conditions
   if (windSpeedKmh > 32) {
     recommendations.push({
       icon: <Wind className="w-7 h-7 sm:w-8 sm:h-8" />,
@@ -79,8 +109,8 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
     });
   }
 
-  // humid
-  if (humidity > 70) {
+  // humid conditions
+  if (humidity > 70 && temperatureCelsius > 15) {
     recommendations.push({
       icon: <Droplets className="w-7 h-7 sm:w-8 sm:h-8" />,
       title: "High Humidity",
@@ -89,17 +119,8 @@ function getWeatherRecommendations(weather: CurrentWeather): Recommendation[] {
     });
   }
 
-  // default if nothing matched
-  if (recommendations.length === 0) {
-    recommendations.push({
-      icon: <Lightbulb className="w-7 h-7 sm:w-8 sm:h-8" />,
-      title: "General Advice",
-      description: "Check the weather conditions before heading out and plan your day accordingly.",
-      color: "text-purple-500",
-    });
-  }
-
-  return recommendations.slice(0, 3); // max 3
+  // always return at least 2-3 recommendations
+  return recommendations.slice(0, 3);
 }
 
 export function WeatherRecommendations({ weather }: WeatherRecommendationsProps) {

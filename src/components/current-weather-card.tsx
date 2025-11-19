@@ -18,8 +18,10 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
   const { preferences, addFavorite, removeFavorite, isFavorite, favorites } = useUserPreferences();
   const favorite = isFavorite(data.city);
 
-  // format the date nicely
-  const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+  // format the date nicely - parse as local date to avoid timezone issues
+  const [year, month, day] = data.date.split('-').map(Number);
+  const localDate = new Date(year, month - 1, day);
+  const formattedDate = localDate.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',

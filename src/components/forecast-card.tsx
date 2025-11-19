@@ -18,8 +18,10 @@ type ForecastCardProps = {
 function ForecastItem({ date, condition, highTempCelsius, lowTempCelsius }: DailyForecast) {
   const { preferences } = useUserPreferences();
 
-  // get day name like "Mon" "Tue" etc
-  const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
+  // get day name like "Mon" "Tue" etc - parse as local date to avoid timezone issues
+  const [year, month, day] = date.split('-').map(Number);
+  const localDate = new Date(year, month - 1, day);
+  const dayName = localDate.toLocaleDateString('en-US', { weekday: 'short' });
 
   // temps in whatever unit user wants
   const displayHigh = convertTemperature(highTempCelsius, "celsius", preferences.temperatureUnit);

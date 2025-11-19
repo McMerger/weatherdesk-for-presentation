@@ -239,7 +239,8 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
   const { preferences } = useUserPreferences();
   const feelsLike = getFeelsLikeDescription(weather);
 
-  const displayTemp = convertTemperature(weather.temperatureCelsius, "celsius", preferences.temperatureUnit);
+  const displayActualTemp = convertTemperature(weather.temperatureCelsius, "celsius", preferences.temperatureUnit);
+  const displayFeelsLikeTemp = convertTemperature(weather.feelsLikeCelsius, "celsius", preferences.temperatureUnit);
   const tempSymbol = getTemperatureSymbol(preferences.temperatureUnit);
 
   const windSpeedKmh = weather.windSpeedMps * 3.6;
@@ -271,10 +272,14 @@ export function FeelsLikeWeather({ weather }: FeelsLikeWeatherProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 pt-5 border-t border-white/20">
+          <div className="grid grid-cols-4 gap-4 pt-5 border-t border-white/20">
             <div className="text-center">
-              <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Temp</p>
-              <p className="text-xl sm:text-2xl font-bold text-white drop-shadow-md">{displayTemp}{tempSymbol}</p>
+              <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Actual</p>
+              <p className="text-xl sm:text-2xl font-bold text-white drop-shadow-md">{displayActualTemp}{tempSymbol}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Feels Like</p>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-300 drop-shadow-md">{displayFeelsLikeTemp}{tempSymbol}</p>
             </div>
             <div className="text-center">
               <p className="text-sm text-white/70 uppercase tracking-wide mb-2">Humidity</p>
