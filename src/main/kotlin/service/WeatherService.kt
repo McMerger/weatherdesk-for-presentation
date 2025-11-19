@@ -14,6 +14,7 @@ import mu.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.exp
 
 private val logger = KotlinLogging.logger {}
 
@@ -75,6 +76,11 @@ class WeatherService(private val client: HttpClient) {
                 current = CurrentWeather(
                     city = cityName ?: "$lat,$lon",
                     temperatureCelsius = 0.0,
+                    feelsLikeCelsius = calculateFeelsLike(
+                        tempC = 0.0,
+                        windMps = 0.0,
+                        humidity = 0
+                    ),
                     condition = "UNKNOWN",
                     conditionDescription = "No data",
                     humidity = 0,
@@ -91,12 +97,19 @@ class WeatherService(private val client: HttpClient) {
         // Safely extract current weather
         val currentData = response.current
         val dailyData = response.daily
+
+        // If either current weather or daily weather response is empty, returns an empty weather data and forecast
         if (currentData == null || dailyData == null) {
             logger.warn { "Incomplete weather data: current=$currentData, daily=$dailyData" }
             return WeatherData(
                 current = CurrentWeather(
                     city = cityName ?: "$lat,$lon",
                     temperatureCelsius = currentData?.temperature ?: 0.0,
+                    feelsLikeCelsius = calculateFeelsLike(
+                        tempC = 0.0,
+                        windMps = 0.0,
+                        humidity = 0
+                    ),
                     condition = currentData?.weatherCode?.let { weatherCodeToCondition(it) } ?: "UNKNOWN",
                     conditionDescription = currentData?.weatherCode?.let { weatherCodeToDescription(it) } ?: "No data",
                     humidity = 0,
@@ -110,7 +123,7 @@ class WeatherService(private val client: HttpClient) {
             )
         }
 
-        // Safely extract humidity
+        // Extracts humidity
         val humidity = response.hourly?.let { hourly ->
             val index = hourly.time.indexOf(currentData.time)
             if (index != -1 && index < hourly.humidity.size) hourly.humidity[index] else 0
@@ -127,10 +140,16 @@ class WeatherService(private val client: HttpClient) {
             )
         }
 
+        // Saves weather data and forecast
         return WeatherData(
             current = CurrentWeather(
                 city = cityName ?: "${response.latitude},${response.longitude}",
                 temperatureCelsius = currentData.temperature,
+                feelsLikeCelsius = calculateFeelsLike(
+                    tempC = currentData.temperature,
+                    windMps = currentData.windSpeed10m / 3.6,
+                    humidity = humidity
+                ),
                 condition = weatherCodeToCondition(currentData.weatherCode),
                 conditionDescription = weatherCodeToDescription(currentData.weatherCode),
                 humidity = humidity,
@@ -203,6 +222,12 @@ class WeatherService(private val client: HttpClient) {
 
     fun close() {
         client.close()
+    }
+
+    // Uses Steadman/ Australian BOM for Apparent Temperature
+    private fun calculateFeelsLike(tempC: Double, windMps: Double, humidity: Int): Double {
+        val e = (humidity / 100.0) * 6.105 * exp((17.27 * tempC) / (237.7 + tempC))
+        return tempC + 0.33 * e - 0.70 * windMps - 4.0
     }
 
     companion object {

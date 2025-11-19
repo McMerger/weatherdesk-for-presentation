@@ -61,6 +61,7 @@ class GeocodingService(private val client: HttpClient) {
                 url {
                     parameters.append("name", query)
                     parameters.append("count", limit.toString())
+                    parameters.append("language", "en")
                 }
             }.body()
             response.results ?: emptyList()

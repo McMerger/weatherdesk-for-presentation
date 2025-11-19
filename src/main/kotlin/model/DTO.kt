@@ -11,6 +11,7 @@ data class WeatherData(
 data class CurrentWeather(
     val city: String,
     val temperatureCelsius: Double,
+    val feelsLikeCelsius: Double,
     val condition: String,
     val conditionDescription: String,
     val humidity: Int,
