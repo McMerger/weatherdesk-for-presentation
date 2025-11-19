@@ -1,115 +1,60 @@
-# LunaWeather
+LunaWeather
 
-A modern, full-stack weather application with real-time weather data, forecasts, and personalized weather insights.
+LunaWeather is a full-stack weather app with live weather data, detailed forecasts, and some personality in the “feels like” insights. It's designed to be user-friendly and modern.
+What it does
+•	Real-time weather: Get current conditions from OpenMeteo for any city worldwide.
+•	5-day forecast: See high/low temps and details for the week ahead.
+•	Global search: Type in any location, it works.
+•	Relatable “feels like” lines: Short descriptions that actually make sense.
+•	Weather recommendations: Handy suggestions for things like clothing or gear.
+•	Theme support: Dark and light modes, with smooth transitions.
+•	Favorites: Save locations and adjust preferences for display.
+•	Responsive design: Looks good on phones, tablets, and desktops (glassmorphism-style UI).
+Tech stack
+Frontend
+•	Next.js 14 (with app router, based on React)
+•	TypeScript
+•	Tailwind CSS
+•	shadcn/ui library (UI components)
+Backend
+•	Kotlin & Ktor (backend API)
+•	OpenMeteo (weather data)
+•	Nominatim (city-to-coordinates geocoding)
 
-## Features
-
-- **Real-Time Weather Data**: Live weather conditions from OpenMeteo API
-- **5-Day Forecast**: Detailed weather predictions with high/low temperatures
-- **Global City Search**: Look up weather for any location worldwide
-- **"Feels Like" Descriptions**: Quirky, relatable weather condition descriptions
-- **Weather Recommendations**: Smart suggestions based on current conditions
-- **Theme Support**: Light and dark mode with smooth transitions
-- **Favorites & Preferences**: Save locations and customize display settings
-- **Responsive Design**: Beautiful glass-morphism UI that works on all devices
-
-## Tech Stack
-
-### Frontend
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Modern styling
-- **shadcn/ui** - Premium component library
-
-### Backend
-- **Kotlin** - Type-safe backend development
-- **Ktor** - Async web framework
-- **OpenMeteo API** - Weather data provider
-- **Nominatim** - Geocoding service
-
-## Quick Start
-
-### Prerequisites
-- Node.js 18+
-- Java 17+ (for backend)
-
-### Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/McMerger/LunaWeather.git
-cd LunaWeather
-```
-
-2. **Install frontend dependencies**
-```bash
-npm install
-```
-
-3. **Start the backend server**
-```bash
-./run-backend.sh
-```
-Backend runs on `http://localhost:8080`
-
-4. **Start the frontend** (in a new terminal)
-```bash
-npm run dev
-```
-Frontend runs on `http://localhost:3000`
-
-## Project Structure
-
-```
+Project structure
+text
 LunaWeather/
 ├── src/
-│   ├── app/                    # Next.js pages
-│   ├── components/             # React components
-│   ├── contexts/               # React contexts
-│   ├── lib/                    # Utilities
-│   └── main/kotlin/            # Kotlin backend
-│       ├── model/              # Data models
-│       ├── service/            # Business logic
-│       └── Main.kt             # Server entry point
-├── build.gradle.kts            # Kotlin build config
-├── package.json                # Node dependencies
-└── run-backend.sh              # Backend startup script
-```
+│   ├── app/          # Next.js pages
+│   ├── components/   # React UI components
+│   ├── contexts/     # Theme and preferences
+│   ├── lib/          # Utility code
+│   └── main/kotlin/  # Backend (Kotlin/Ktor)
+│       ├── model/    # Data models
+│       ├── service/  # API/business logic
+│       └── Main.kt   # Entry point for server
+├── build.gradle.kts  # Kotlin build config
+├── package.json      # Frontend dependencies
+└── run-backend.sh    # Backend start script
+Useful scripts
+Frontend:
+•	npm run dev – development mode
+•	npm run build – build for production
+•	npm start – serve built frontend
+Backend:
+•	./run-backend.sh – build and run backend
+•	./gradlew build – build backend by itself
 
-## Available Scripts
+API endpoints
+•	GET /weather?city=<city_name>: Get current weather and forecast for a city
+•	POST /weather/rating: Send a weather rating (demo endpoint)
+Customization options
+•	Change units (°C/°F, km/h, mph, m/s)
+•	Toggle “feels like” and recommendations on or off
+•	Set auto-refresh intervals for live data
+Credits
+•	Weather: OpenMeteo
+•	Geocoding: Nominatim
+•	UI: shadcn/ui
+•	Framework: Next.js
 
-### Frontend
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-
-### Backend
-- `./run-backend.sh` - Build and run backend server
-- `./gradlew build` - Build backend only
-
-## API Endpoints
-
-The backend provides the following endpoints:
-
-- `GET /weather?city=<city_name>` - Get weather data for a city
-- `POST /weather/rating` - Submit weather rating
-
-## Customization
-
-### User Preferences
-- Temperature units (Celsius/Fahrenheit)
-- Wind speed units (km/h, mph, m/s)
-- Toggle "Feels Like" descriptions
-- Toggle weather recommendations
-- Auto-refresh settings
-
-## License
-
-MIT License - feel free to use this project for your own purposes.
-
-## Acknowledgments
-
-- Weather data: [OpenMeteo API](https://open-meteo.com/)
-- Geocoding: [Nominatim](https://nominatim.openstreetmap.org/)
-- UI components: [shadcn/ui](https://ui.shadcn.com/)
-- Framework: [Next.js](https://nextjs.org/)
