@@ -106,30 +106,34 @@ export function FavoritesTabs({ currentCity, onCitySelect, onAddFavorite }: Favo
         {favorites.map((favorite) => {
           const isActive = activeTab === favorite.city || currentCity === favorite.city;
           return (
-            <button
+            <div
               key={favorite.id}
-              onClick={() => handleTabClick(favorite.city)}
               className={`group relative flex items-center gap-2 px-4 py-2 rounded-lg backdrop-blur-md border transition-all duration-200 ${
                 isActive
                   ? "bg-white/30 dark:bg-black/40 border-white/50 dark:border-white/30 shadow-lg"
                   : "bg-white/10 dark:bg-black/20 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/30"
               }`}
             >
-              <Star
-                className={`w-4 h-4 transition-colors ${
-                  isActive
-                    ? "text-yellow-300 fill-yellow-300"
-                    : "text-white/60 fill-white/60"
-                }`}
-              />
-              <span className="text-white font-medium drop-shadow-md">
-                {favorite.city}
-              </span>
-              {favorite.country && (
-                <span className="text-white/60 text-xs drop-shadow-sm">
-                  {favorite.country}
+              <button
+                onClick={() => handleTabClick(favorite.city)}
+                className="flex items-center gap-2 flex-1"
+              >
+                <Star
+                  className={`w-4 h-4 transition-colors ${
+                    isActive
+                      ? "text-yellow-300 fill-yellow-300"
+                      : "text-white/60 fill-white/60"
+                  }`}
+                />
+                <span className="text-white font-medium drop-shadow-md">
+                  {favorite.city}
                 </span>
-              )}
+                {favorite.country && (
+                  <span className="text-white/60 text-xs drop-shadow-sm">
+                    {favorite.country}
+                  </span>
+                )}
+              </button>
               <button
                 onClick={(e) => handleRemove(e, favorite.id, favorite.city)}
                 className="ml-1 p-1 rounded-full hover:bg-red-500/50 transition-colors opacity-0 group-hover:opacity-100"
@@ -137,7 +141,7 @@ export function FavoritesTabs({ currentCity, onCitySelect, onAddFavorite }: Favo
               >
                 <X className="w-3 h-3 text-white" />
               </button>
-            </button>
+            </div>
           );
         })}
 
